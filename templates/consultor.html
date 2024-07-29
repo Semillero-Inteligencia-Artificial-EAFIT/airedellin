@@ -1,0 +1,21 @@
+<center>
+	<h1>
+	<p>consult the prediction</p>
+	<h2>
+	<p>proyect info</p>		
+	<!--p>data <a href="http://daquina.io/aqaviz/">daquina</a></p-->
+	</h2>
+	<p><h4>( {{ msg }} )</h4></p>
+	<br>
+	{% for i in names%}
+	<hr>
+	<br>
+	<br>
+	prediction for {{ i }}
+	<br>
+	{% set filePath = "/img/" + i + salt+".png" %}
+	<img src="{{ url_for('static',filename = filePath )}}" width="560" height="315">
+	<br>
+	{% endfor %}	
+	</h1>
+</center>

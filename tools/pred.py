@@ -1,6 +1,13 @@
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 import matplotlib.pyplot as plt
-from .logic import timex2
+
+def timex2(time):
+  newTime = []
+  numVales = len(time)
+  for i in time:
+    newTime.append(numVales+i)
+  return time + newTime
+
 class pred():
 	def __init__(self,data):
 		self.data = data
