@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_7eb95f20698737051379057328a0eb1c {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+</head>
+<body>    
+    
+            <div class="folium-map" id="map_7eb95f20698737051379057328a0eb1c" ></div>
+        
+</body>
+<script>    
+    
+            var map_7eb95f20698737051379057328a0eb1c = L.map(
+                "map_7eb95f20698737051379057328a0eb1c",
+                {
+                    center: [6.256405968932449, -75.59835591123756],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 10,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_ac225d9be7c86e94538431806f089003 = L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_7eb95f20698737051379057328a0eb1c);
+        
+    
+            var marker_16d15214ac10d61e620de487276dd670 = L.marker(
+                [6.260313, -75.5646647],
+                {}
+            ).addTo(map_7eb95f20698737051379057328a0eb1c);
+        
+    
+        var popup_1b2938827493e7125163702bc298268e = L.popup({"maxWidth": "100%"});
+
+        
+            var html_7661fb2ee05a7fa3f6d98b645568b0e2 = $(`<div id="html_7661fb2ee05a7fa3f6d98b645568b0e2" style="width: 100.0%; height: 100.0%;">Un/loquer<li>http://unloquer.org/</li><br></div>`)[0];
+            popup_1b2938827493e7125163702bc298268e.setContent(html_7661fb2ee05a7fa3f6d98b645568b0e2);
+        
+
+        marker_16d15214ac10d61e620de487276dd670.bindPopup(popup_1b2938827493e7125163702bc298268e)
+        ;
+
+        
+    
+    
+            marker_16d15214ac10d61e620de487276dd670.bindTooltip(
+                `<div>
+                     Un/loquer
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_29cd788e10e25b3d774260f485c1d011 = L.marker(
+                [6.1983269, -75.5794852],
+                {}
+            ).addTo(map_7eb95f20698737051379057328a0eb1c);
+        
+    
+        var popup_55dfeba1da0f0c968e88c12685b2f8b8 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_03ec6aafd3c1457df3655efbd63ce5ba = $(`<div id="html_03ec6aafd3c1457df3655efbd63ce5ba" style="width: 100.0%; height: 100.0%;">Semillero machine lerning<li>-</li><br></div>`)[0];
+            popup_55dfeba1da0f0c968e88c12685b2f8b8.setContent(html_03ec6aafd3c1457df3655efbd63ce5ba);
+        
+
+        marker_29cd788e10e25b3d774260f485c1d011.bindPopup(popup_55dfeba1da0f0c968e88c12685b2f8b8)
+        ;
+
+        
+    
+    
+            marker_29cd788e10e25b3d774260f485c1d011.bindTooltip(
+                `<div>
+                     Semillero machine lerning
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_5fca5d272c974e3b96e91e41ddc20dd4 = L.marker(
+                [6.1983269, -75.5794852],
+                {}
+            ).addTo(map_7eb95f20698737051379057328a0eb1c);
+        
+    
+        var popup_0e496f5884198d490edb0c10de7f8c1c = L.popup({"maxWidth": "100%"});
+
+        
+            var html_3210930a5ba0fce69e12ae2e20a13cd7 = $(`<div id="html_3210930a5ba0fce69e12ae2e20a13cd7" style="width: 100.0%; height: 100.0%;">Semillero machine lerning<li>-</li><br></div>`)[0];
+            popup_0e496f5884198d490edb0c10de7f8c1c.setContent(html_3210930a5ba0fce69e12ae2e20a13cd7);
+        
+
+        marker_5fca5d272c974e3b96e91e41ddc20dd4.bindPopup(popup_0e496f5884198d490edb0c10de7f8c1c)
+        ;
+
+        
+    
+    
+            marker_5fca5d272c974e3b96e91e41ddc20dd4.bindTooltip(
+                `<div>
+                     Semillero machine lerning
+                 </div>`,
+                {"sticky": true}
+            );
+        
+    
+            var marker_6d2379c0b6ebd80a985bca621a0c3f99 = L.marker(
+                [6.1800559, -75.5659113],
+                {}
+            ).addTo(map_7eb95f20698737051379057328a0eb1c);
+        
+    
+        var popup_a18e12d9ce0391a92dcb520803ef6766 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_a4b71e6c2da8bcc6ac267314f47c6688 = $(`<div id="html_a4b71e6c2da8bcc6ac267314f47c6688" style="width: 100.0%; height: 100.0%;">hacklab san lucas<li>https://t.me/+uWkv-ZaoC2I0MGFh</li><br></div>`)[0];
+            popup_a18e12d9ce0391a92dcb520803ef6766.setContent(html_a4b71e6c2da8bcc6ac267314f47c6688);
+        
+
+        marker_6d2379c0b6ebd80a985bca621a0c3f99.bindPopup(popup_a18e12d9ce0391a92dcb520803ef6766)
+        ;
+
+        
+    
+    
+            marker_6d2379c0b6ebd80a985bca621a0c3f99.bindTooltip(
+                `<div>
+                     hacklab san lucas
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>

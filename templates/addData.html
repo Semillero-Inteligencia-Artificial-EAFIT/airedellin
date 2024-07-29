@@ -1,0 +1,21 @@
+{% extends  'template.html'%}
+{% block content %} 
+<center>
+<h1>Añade tu comunidad</h1>
+<div class="w-50 p-3" >
+<form method="post">
+<label>Nombre </label>
+<input  class="form-control" type="text" name="name" required>
+<label>Contacto </label>
+<input  class="form-control" type="text" name="contact" required>
+<br>
+<h2>Ingrese las cordenadas</h2>
+<label>longitud </label>
+<input  class="form-control" type="text" name="lng" placeholder="6.338773" required>
+<label>Latitud </label>
+<input  class="form-control" type="text" name="lat" placeholder="-75.6909483" required>
+<input class="btn btn-primary" type="submit" value="Submit">
+</form>
+</div>
+</center>
+{% endblock  %}
