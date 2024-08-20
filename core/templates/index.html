@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Toggle deck.gl layer and Display buildings in 3D</title>
+    <meta property="og:description" content="Toggle deck.gl layer using maplibre and display buildings' height in 3D." />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.5.2/dist/maplibre-gl.css" />
+    <script src="https://unpkg.com/maplibre-gl@4.5.2/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/deck.gl@8.9.33/dist.min.js"></script>
+    <script src="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.umd.min.js"></script>
+    <link href="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.css" rel="stylesheet" />
+    <style>
+      body { margin: 0; padding: 0; }
+      html, body, #map { height: 100%; }
+      #toggle-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: rgb(130, 25, 191);
+        color: #f0ead6;
+        font-size: 1.2rem;
+        min-width: 70px;
+        border-radius: 5px;
+        border: none;
+        padding: 5px 10px;
+        transition: 0.3s;
+      }
+      #toggle-button:hover { scale: 1.1; box-shadow: 0 0 4px 4px gray; }
+      .maplibregl-popup { z-index: 2; }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <button id="toggle-button">Hide</button>
+    <script>
+      const MAPTILER_KEY = '{{ token }}';
+      const url = 'https://maps.clockworkmicro.com/streets/v1/style?x-api-key=';
+      const apiKey = 'Ok1IyUgxKLobSODw7NcS';
+
+      let overlay;
+
+      const map = new maplibregl.Map({
+        container: 'map',
+        style: `https://api.maptiler.com/maps/basic-v2/style.json?key=${MAPTILER_KEY}`,
+        center:[2.345885, 48.860412],
+        zoom: 15.5,
+        pitch: 45,
+        bearing: -17.6,
+        antialias: true,
+      });
+      map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+      const sampleData = {
+        type: 'FeatureCollection',
+        name: 'Jardins Des Paris',
+        crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+        features: [
+          {
+            type: 'Feature',
+            properties: { name: 'Jardins du Trocadéro', district: 16 },
+            geometry: { type: 'Point', coordinates: [2.289207, 48.861561] },
+          },
+          {
+            type: 'Feature',
+            properties: { name: 'Jardin des Plantes', district: 5 },
+            geometry: { type: 'Point', coordinates: [2.359823, 48.843995] },
+          },
+          {
+            type: 'Feature',
+            properties: { name: 'Jardins das Tulherias', district: 1 },
+            geometry: { type: 'Point', coordinates: [2.327092, 48.863608] },
+          },
+          {
+            type: 'Feature',
+            properties: { name: 'Parc de Bercy', district: 12 },
+            geometry: { type: 'Point', coordinates: [2.382094, 48.835962] },
+          },
+          {
+            type: 'Feature',
+            properties: { name: 'Jardin du Luxemburg', district: 6 },
+            geometry: { type: 'Point', coordinates: [2.336975, 48.846421] },
+          },
+        ],
+      };
+
+      function initializeOverlay() {
+        const layer = new deck.ScatterplotLayer({
+          id: 'scatterplot-layer',
+          data: sampleData.features,
+          pickable: true,
+          opacity: 0.8,
+          stroked: true,
+          filled: true,
+          radiusScale: 6,
+          radiusMinPixels: 20,
+          radiusMaxPixels: 100,
+          lineWidthMinPixels: 5,
+          getPosition: (d) => d.geometry.coordinates,
+          getFillColor: (d) => [49, 130, 206],
+          getLineColor: (d) => [175, 0, 32],
+          onClick: (info) => {
+            const { coordinate, object } = info;
+            const description = `
+              <div>
+                <p><strong>Name:</strong> ${object.properties.name}</p>
+                <p><strong>District:</strong> ${object.properties.district}</p>
+              </div>
+            `;
+
+            new maplibregl.Popup()
+              .setLngLat(coordinate)
+              .setHTML(description)
+              .addTo(map);
+          },
+        });
+
+        overlay = new deck.MapboxOverlay({ layers: [layer] });
+        map.addControl(overlay);
+      }
+
+      let show = true;
+
+      map.on('load', () => {
+        initializeOverlay();
+
+        // Insert the layer beneath any symbol layer.
+        const layers = map.getStyle().layers;
+        let labelLayerId;
+        for (let i = 0; i < layers.length; i++) {
+          if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+            labelLayerId = layers[i].id;
+            break;
+          }
+        }
+        map.addSource('openmaptiles', {
+          url: `https://api.maptiler.com/tiles/v3/tiles.json?key=${MAPTILER_KEY}`,
+          type: 'vector',
+        });
+        map.addLayer(
+          {
+            'id': '3d-buildings',
+            'source': 'openmaptiles',
+            'source-layer': 'building',
+            'type': 'fill-extrusion',
+            'minzoom': 15,
+            'filter': ['!=', ['get', 'hide_3d'], true],
+            'paint': {
+              'fill-extrusion-color': [
+                'interpolate',
+                ['linear'],
+                ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+              ],
+              'fill-extrusion-height': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                15,
+                0,
+                16,
+                ['get', 'render_height']
+              ],
+              'fill-extrusion-base': ['case',
+                ['>=', ['get', 'zoom'], 16],
+                ['get', 'render_min_height'], 0
+              ]
+            }
+          },
+          labelLayerId
+        );
+
+        const toggleButton = document.querySelector('#toggle-button');
+        toggleButton.addEventListener('click', () => {
+          if (show) {
+            map.removeControl(overlay);
+            toggleButton.textContent = 'Show';
+          } else {
+            initializeOverlay();
+            toggleButton.textContent = 'Hide';
+          }
+          show = !show;
+        });
+      });
+    </script>
+  </body>
+</html>
