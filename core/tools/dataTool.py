@@ -1,32 +1,91 @@
 from influxdb import InfluxDBClient
-class sensors:
-	def __init__(self,db,host,port=8086):
-		#self.port = port
-		#self.host = host 
-		self.client = InfluxDBClient(host=host, port=port,database=db)
-		self.db = db
-	def names(self):
-		names = self.client.query('SHOW MEASUREMENTS ON "'+self.db+'"').raw
-		clearNames = eval(str(names)[88:-4])
-		return list(clearNames)
-	def data(self,name,data = "pm25"):
-		q = self.client.query('SELECT mean("'+data+'") AS "data" FROM "'+self.db+'"."autogen".'+name+' WHERE time > now() - 24h GROUP BY time(10s) FILL(none)')
-		#q = self.client.query('select * from "PM2.5_BOG_FON_Hayuelos_E01" WHERE time >= now() - 10m')
-		#q = self.client.query('SELECT mean("'+data+'") AS "data" FROM "'+self.db+'"."autogen".'+name+' WHERE (time > now() - 5h GROUP BY time(10s) FILL(none))')
-		#q = self.client.query('select * from "'+name+'" WHERE time >= now() - 12h')
-		#q = self.client.query('SELECT mean("'+data+'") AS "data" FROM "'+self.db+'"."autogen".'+name+' WHERE time > now() - 5h GROUP BY time(10s) FILL(none)')
-		values = []
-		#print(q)
-		for value in q.get_points():
-			values.append(value["data"])
-		return values
-"""
-def test():
-	#client = InfluxDBClient(host='influxdb.canair.io', port=8086, database='canairio')
-	#host = "aqa.unloquer.org"
-	# PM25_Berlin_CanAirIO_v2
-	#dbs = sensors("canairio",host)
-	dbs = sensors("canairio",host)
-	print(dbs.data("PM25_Berlin_CanAirIO_v2"))
-test()
-"""
+import random
+
+
+def generate_random_coordinates(x_range=(-100, 100), y_range=(-100, 100)):
+    """
+    Generates a tuple representing random coordinates within the given x and y ranges.
+
+    Parameters:
+    - x_range (tuple): A tuple specifying the min and max range for x coordinates.
+    - y_range (tuple): A tuple specifying the min and max range for y coordinates.
+
+    Returns:
+    - tuple: A tuple containing the x and y coordinates.
+    """
+    x = random.uniform(*x_range)
+    y = random.uniform(*y_range)
+    return (x, y)
+
+
+class Sensors:
+    def __init__(self, db, host, port=8086):
+        self.client = InfluxDBClient(host=host, port=port, database=db)
+        self.db = db
+
+    def names(self):
+        query = 'SELECT DISTINCT("name") FROM "fixed_stations_01" WHERE time > now() - 1d'
+        result = self.client.query(query)
+        return [item['distinct'] for item in result.get_points()]
+
+    def data(self, name):
+        query = (
+            "SELECT mean(\"pm25\") AS \"data\" FROM \"fixed_stations_01\" "
+            f"WHERE \"name\" = '{name}' AND time >= now() - 24h "
+            "GROUP BY time(30s) fill(null) ORDER BY time ASC"
+        )
+        result = self.client.query(query)
+        return [value["data"] for value in result.get_points()]
+
+    def coordinates(self, name):
+        query = (
+            "SELECT last(\"latitude\") AS \"lat\", last(\"longitude\") AS \"lon\" "
+            f"FROM \"fixed_stations_01\" WHERE \"name\" = '{name}' AND time > now() - 1d"
+        )
+        result = self.client.query(query)
+        points = list(result.get_points())
+        if points:
+            return points[0].get("lat"), points[0].get("lon")
+        return None, None
+
+    def station_data(self, name):
+        coords = self.coordinates(name)
+        pm25_data = self.data(name)
+        return {
+            "name": name,
+            "coordinates": coords,
+            "pm25_data": pm25_data
+        }
+    def get_formatted_data(self,size=50):
+        features = []
+        for name in self.names():
+            coords = self.coordinates(name)
+            if coords[0] is not None and coords[1] is not None:
+                feature = {
+                    "type": "Feature",
+                    "properties": {
+                        "name": name,
+                        "pm25": str(self.data(name)[0])  # This will include all PM2.5 data points
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": coords
+                    }
+                }
+                features.append(feature)
+            else:
+                feature = {
+                    "type": "Feature",
+                    "properties": {
+                        "name": name,
+                        "pm25": str(self.data(name)[0])  # This will include all PM2.5 data points
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": generate_random_coordinates()
+                    }
+                }
+                features.append(feature)
+
+            print(features)
+            return features
