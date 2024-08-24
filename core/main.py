@@ -25,30 +25,31 @@ class webpage():
     data = [
       {
           'type': 'Feature',
-          'properties': {'name': 'Jardins du Trocadéro', 'district': 16},
+          'properties': {'name': 'Jardins du Trocadéro', 'pm25': 16},
           'geometry': {'type': 'Point', 'coordinates': [2.289207, 48.861561]},
       },
       {
           'type': 'Feature',
-          'properties': {'name': 'Jardin des Plantes', 'district': 5},
+          'properties': {'name': 'Jardin des Plantes', 'pm25': 5},
           'geometry': {'type': 'Point', 'coordinates': [2.359823, 48.843995]},
       },
       {
           'type': 'Feature',
-          'properties': {'name': 'Jardins das Tulherias', 'district': 9999},
+          'properties': {'name': 'Jardins das Tulherias', 'pm25': 9999},
           'geometry': {'type': 'Point', 'coordinates': [2.327092, 48.863608]},
       },
       {
           'type': 'Feature',
-          'properties': {'name': 'Parc de Bercy', 'district': 12},
+          'properties': {'name': 'Parc de Bercy', 'pm25': 12},
           'geometry': {'type': 'Point', 'coordinates': [2.382094, 48.835962]},
       },
       {
           'type': 'Feature',
-          'properties': {'name': 'Jardin du Luxemburg', 'district': 6},
+          'properties': {'name': 'Jardin du Luxemburg', 'pm25': 6},
           'geometry': {'type': 'Point', 'coordinates': [2.336975, 48.846421]},
       },
-  ]
+  ]+formatted_data
+
           
     
     return render_template("index.html",token=token,data=data)

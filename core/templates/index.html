@@ -39,10 +39,9 @@
       const apiKey = 'Ok1IyUgxKLobSODw7NcS';
 
       let overlay;
-
       const map = new maplibregl.Map({
         container: 'map',
-        style: `https://api.maptiler.com/maps/basic-v2/style.json?key=${MAPTILER_KEY}`,
+        style: `https://api.maptiler.com/maps/aquarelle/style.json?key=${MAPTILER_KEY}`,
         center:[2.345885, 48.860412],
         zoom: 15.5,
         pitch: 45,
@@ -59,7 +58,15 @@
       };
 
       function initializeOverlay() {
-        const layer = new deck.ScatterplotLayer({
+          const colorPalette = [
+              [0, 255, 0],    // Green
+              [255, 255, 0],  // Yellow
+              [255, 165, 0],  // Orange
+              [255, 0, 0],    // Red
+              [128, 0, 128],  // Purple
+              [0, 0, 0]       // Black
+          ];
+          const layer = new deck.ScatterplotLayer({
           id: 'scatterplot-layer',
           data: sampleData.features,
           pickable: true,
@@ -71,14 +78,32 @@
           radiusMaxPixels: 100,
           lineWidthMinPixels: 5,
           getPosition: (d) => d.geometry.coordinates,
-          getFillColor: (d) => [49, 130, 206],
-          getLineColor: (d) => [175, 0, 32],
+          getFillColor: (d) => {
+          const pm25 = d.properties.pm25;
+
+          if (pm25 > 150) {
+              return colorPalette[5]; // Black
+          } else if (pm25 > 100) {
+              return colorPalette[4]; // Purple
+          } else if (pm25 > 55) {
+              return colorPalette[3]; // Red
+          } else if (pm25 > 35) {
+              return colorPalette[2]; // Orange
+          } else if (pm25 > 12) {
+              return colorPalette[1]; // Yellow
+          } else {
+              return colorPalette[0]; // Green
+          }
+      },
+
+          getLineColor: (d) =>[49, 130, 206],
+           //[175, 0, 32],
           onClick: (info) => {
             const { coordinate, object } = info;
             const description = `
               <div>
                 <p><strong>Name:</strong><a href=""> ${object.properties.name}</a></p>
-                <p><strong>Mean of:</strong> ${object.properties.district}</p>
+                <p><strong>Mean of:</strong> ${object.properties.pm25}</p>
               </div>
             `;
 

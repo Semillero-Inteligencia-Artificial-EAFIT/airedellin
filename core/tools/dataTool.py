@@ -22,18 +22,32 @@ class Sensors:
     def __init__(self, db, host, port=8086):
         self.client = InfluxDBClient(host=host, port=port, database=db)
         self.db = db
+        self.table="fixed_stations_01"
 
     def names(self):
-        query = 'SELECT DISTINCT("name") FROM "fixed_stations_01" WHERE time > now() - 1d'
+        print(self.db)
+        query = 'SELECT DISTINCT("name") FROM "fixed_stations_01" WHERE time > now() - 7d'
         result = self.client.query(query)
         return [item['distinct'] for item in result.get_points()]
+#    def names(self):
+        """
+        Retrieves all measurement names from the specified InfluxDB database.
 
+        :return: List of measurement names as strings.
+        """
+        """
+        query = f'SHOW MEASUREMENTS ON "{self.db}"'
+        result = self.client.query(query)
+        names = [item['name'] for item in result.get_points()]
+        return names
+        """
     def data(self, name):
         query = (
             "SELECT mean(\"pm25\") AS \"data\" FROM \"fixed_stations_01\" "
             f"WHERE \"name\" = '{name}' AND time >= now() - 24h "
             "GROUP BY time(30s) fill(null) ORDER BY time ASC"
         )
+
         result = self.client.query(query)
         return [value["data"] for value in result.get_points()]
 
@@ -58,8 +72,12 @@ class Sensors:
         }
     def get_formatted_data(self,size=50):
         features = []
+        print(self.names())
         for name in self.names():
             coords = self.coordinates(name)
+            print(name)
+            if len(self.data(name))==0:
+                continue
             if coords[0] is not None and coords[1] is not None:
                 feature = {
                     "type": "Feature",
@@ -78,7 +96,7 @@ class Sensors:
                     "type": "Feature",
                     "properties": {
                         "name": name,
-                        "pm25": str(self.data(name)[0])  # This will include all PM2.5 data points
+                        "pm25": self.data(name)[0]  # This will include all PM2.5 data points
                     },
                     "geometry": {
                         "type": "Point",
@@ -88,4 +106,4 @@ class Sensors:
                 features.append(feature)
 
             print(features)
-            return features
+        return features
