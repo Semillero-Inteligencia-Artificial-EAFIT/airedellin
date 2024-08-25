@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #f0f7ff, #a3d1ff);
+            font-family: 'Avenir', sans-serif;
+            color: #333;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .frame {
+            border: 3px solid #007bff;
+            border-radius: 10px;
+            padding: 15px;
+            background: #fff;
+            box-shadow: 0px 0px 15px rgba(0, 123, 255, 0.2);
+            margin-bottom: 20px;
+        }
+        .donation-section, .dashboard-section, .ml-section {
+            margin-bottom: 30px;
+        }
+        .donation-frame img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        .ml-section {
+            padding: 20px;
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            background: #f7faff;
+        }
+        .ml-section h3 {
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Donation Section -->
+        <div class="donation-section frame">
+            <h2>Support Our Air Quality Monitoring</h2>
+            <p>Your donations help us keep this project running. Thank you for your support!</p>
+            <div class="row">
+                <div class="col-md-8">
+                    <h5>Your Donation ID: 123456789</h5>
+                </div>
+                <div class="col-md-4">
+                    <div class="donation-frame text-center">
+                        <h5>Scan to Donate</h5>
+                        <img src="https://via.placeholder.com/150" alt="QR Code">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard-section frame">
+            <h2>Live Air Quality Dashboard</h2>
+           <iframe src="http://influxdb.canair.io:8000/d-solo/cmC9jJ34k/bilbao?orgId=1&from=1724580655785&to=1724602255785&panelId=2" width="100%" height="300" frameborder="0"></iframe>
+        </div>
+
+        <!-- ML Algorithms Section -->
+        <div class="ml-section frame">
+            <h2>Machine Learning Predictions</h2>
+            <p>Analyze and predict future air quality trends using our machine learning models.</p>
+            <button class="btn btn-primary btn-lg">Run ML Prediction</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

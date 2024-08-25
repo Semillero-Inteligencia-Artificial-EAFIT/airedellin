@@ -53,5 +53,11 @@ class webpage():
           
     
     return render_template("index.html",token=token,data=data)
-  def sensor():
-    return render_template("sensor.html")
+    
+  @app.route(WEBPAGE + "<string:sensor_name>")
+  def sensor(sensor_name):
+      return render_template("sensors.html", sensor_name=sensor_name)
+
+  @app.route(WEBPAGE + "<string:sensor_name>/<string:algorithm_name>")
+  def mlalgorithm(sensor_name, algorithm_name):
+      return render_template("algorithm.html", algorithm_name=algorithm_name, version=version)

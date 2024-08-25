@@ -1,7 +1,7 @@
 #!/usr/bin/env python 
 # -*- coding: utf-8 -*-"
 """
-airedellin - 2021 - by MLEAFIT
+airedellin - 2024 - by MLEAFIT
 """
 from core.main import webpage
 from core.main import app
