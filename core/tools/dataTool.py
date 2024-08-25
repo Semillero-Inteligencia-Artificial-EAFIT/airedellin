@@ -75,7 +75,6 @@ class Sensors:
         print(self.names())
         for name in self.names():
             coords = self.coordinates(name)
-            #print(name)
             if len(self.data(name))==0:
                 continue
             if coords[0] is not None and coords[1] is not None:
@@ -104,6 +103,4 @@ class Sensors:
                     }
                 }
                 features.append(feature)
-
-            #print(features)
         return features

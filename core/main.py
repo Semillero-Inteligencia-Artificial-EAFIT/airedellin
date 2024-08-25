@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 import json
+import random
+
 
 from .tools.dataTool import Sensors
 # from .tools.pred import pred
@@ -53,7 +55,11 @@ async def index(request: Request):
 async def sensor(request: Request, sensor_name: str):
     return templates.TemplateResponse("sensors.html", {"request": request, "sensor_name": sensor_name})
 
-@app.get("/{sensor_name}/{algorithm_name}", response_class=HTMLResponse)
-async def mlalgorithm(request: Request, sensor_name: str, algorithm_name: str):
-    return templates.TemplateResponse("algorithm.html", {"request": request, "algorithm_name": algorithm_name, "version": version})
+@app.get("/{sensor_name}/predictions", response_class=HTMLResponse)
+async def mlalgorithm(request: Request, sensor_name: str):
+    random_list = [random.randint(0, 55) for _ in range(200)]
+
+    prediction_data=random_list
+    algorithm_names=[]
+    return templates.TemplateResponse("ml_algortithms.html", {"request": request, "algorithm_name": algorithm_names, "data": prediction_data})
 
