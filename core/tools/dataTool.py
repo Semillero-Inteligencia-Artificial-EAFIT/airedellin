@@ -2,7 +2,7 @@ from influxdb import InfluxDBClient
 import random
 
 
-def generate_random_coordinates(x_range=(-100, 100), y_range=(-100, 100)):
+def generate_random_coordinates(x_range=(-80, 80), y_range=(-60, 60)):
     """
     Generates a tuple representing random coordinates within the given x and y ranges.
 
