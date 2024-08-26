@@ -2,7 +2,7 @@
 
 Welcome to **Airedellín**, a PM2.5 visualizer designed to monitor and improve the air quality in Medellín! 🌆✨
 
-This project is currently under development 🚧, and we would love for you to join us! Our team, **MLEAFIT** (Machine Learning EAFIT), is dedicated to applying ML techniques to tackle air quality challenges. We are preparing to participate in the **NASA Space Apps Challenge** with a mission to help Medellín breathe cleaner air.
+This project is currently under development 🚧, and we would love for you to join us! Our team, **MLEAFIT** (Machine Learning club from university EAFIT), is dedicated to applying ML techniques to tackle air quality challenges. We are preparing to participate in the **NASA Space Apps Challenge** with a mission to help from Medellín breathe cleaner air to the word.
 
 ## Project Overview
 
@@ -12,7 +12,7 @@ Airedellín leverages several cutting-edge technologies:
 - **JavaScript**: For frontend interactions.
 - **Deck.gl** & **MapLibre**: For beautiful and responsive map visualizations.
 - **Bootstrap**: For a sleek and modern UI.
-- **InfluxDB**: For efficient data storage and querying.
+- **InfluxDB**: For efficient querying.
 - **CanAirIO**: Our data source, providing real-time air quality data from Medellín.
 
 ## How to Run 🏃‍♀️
