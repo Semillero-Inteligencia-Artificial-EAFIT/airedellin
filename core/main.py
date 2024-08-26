@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request, Depends,Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 import json
@@ -70,10 +70,43 @@ async def sensor(request: Request, sensor_name: str):
     return templates.TemplateResponse("sensors.html", {"request": request, "sensor_name": sensor_name})
 
 @app.get("/{sensor_name}/predictions", response_class=HTMLResponse)
-async def mlalgorithm(request: Request, sensor_name: str):
+async def get_mlalgorithm(request: Request, sensor_name: str):
     random_list = [random.randint(0, 55) for _ in range(200)]
+    algorithm_names = ["linearRegression", "decisionTree", "neuralNetwork","Sarima"]
+    
+    return templates.TemplateResponse("ml_algorithms.html", {
+        "request": request,
+        "algorithm_names": algorithm_names,
+        "data": random_list,
+        "result": None
+    })
 
-    prediction_data=random_list
-    algorithm_names=[]
-    return templates.TemplateResponse("ml_algortithms.html", {"request": request, "algorithm_name": algorithm_names, "data": prediction_data})
-
+@app.post("/{sensor_name}/predictions", response_class=HTMLResponse)
+async def post_mlalgorithm(
+    request: Request,
+    sensor_name: str,
+    algorithm: str = Form(...),
+):
+    random_list = [random.randint(0, 55) for _ in range(200)]
+    
+    # Dictionary to map algorithm names to functions
+    algorithm_map = {
+        "linearRegression": linear_regression,
+        "decisionTree": decision_tree,
+        "neuralNetwork": neural_network,
+    }
+    
+    # Apply the selected algorithm
+    if algorithm in algorithm_map:
+        result = algorithm_map[algorithm](random_list)
+    else:
+        result = random_list  # If no valid algorithm is selected, return the original data
+    
+    algorithm_names = list(algorithm_map.keys())
+    
+    return templates.TemplateResponse("ml_algorithms.html", {
+        "request": request,
+        "algorithm_names": algorithm_names,
+        "data": random_list,
+        "result": result
+    })

@@ -54,13 +54,15 @@
             <h2>Machine Learning Algorithms</h2>
             <p>Select an ML algorithm to analyze your data:</p>
             <div class="form-group">
+            <form method="post" action="">
                 <label for="algorithmSelect">Choose Algorithm:</label>
-                <select class="form-control" id="algorithmSelect">
-                    <option value="linearRegression">Linear Regression</option>
-                    <option value="decisionTree">Decision Tree</option>
-                    <option value="neuralNetwork">Neural Network</option>
+                <select class="form-control" id="algorithmSelect" name="algorithm">
+                    {% for name in algorithm_names %}
+                    <option value="{{ name }}">{{ name | replace("linearRegression", "Linear Regression") | replace("decisionTree", "Decision Tree") | replace("neuralNetwork", "Neural Network") }}</option>
+                    {% endfor %}
                 </select>
             </div>
+            </form>
             <button class="btn btn-primary btn-lg" onclick="runMLAlgorithm()">Run Algorithm</button>
             <div id="mlResult" class="mt-3"></div>
         </div>
@@ -99,23 +101,6 @@
             }
         });
 
-        function runMLAlgorithm() {
-            const algorithm = document.getElementById('algorithmSelect').value;
-            // Placeholder function to simulate ML algorithm execution
-            let result = '';
-            switch(algorithm) {
-                case 'linearRegression':
-                    result = 'Linear Regression analysis result: [Insert Results Here]';
-                    break;
-                case 'decisionTree':
-                    result = 'Decision Tree analysis result: [Insert Results Here]';
-                    break;
-                case 'neuralNetwork':
-                    result = 'Neural Network analysis result: [Insert Results Here]';
-                    break;
-            }
-            document.getElementById('mlResult').innerText = result;
-        }
     </script>
 </body>
 </html>
