@@ -48,7 +48,7 @@ To get started with Airedellín, follow these steps:
     Run the following command to launch the FastAPI server:
 
     ```bash
-    uvicorn main:app --host 0.0.0.0 --port 9600
+    uvicorn airedellin:app --host 0.0.0.0 --port 9600
     ```
 
 4. **Access the web interface**:

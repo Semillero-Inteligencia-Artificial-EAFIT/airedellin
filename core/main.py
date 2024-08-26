@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 import json
 import random
 
+import asyncio
 
 from .tools.dataTool import Sensors
 # from .tools.pred import pred
@@ -15,9 +16,22 @@ app = FastAPI()
 token = readtxtline("data/token.txt")
 host = "influxdb.canair.io"
 sensors = Sensors("canairio", host)
-formatted_data = sensors.get_formatted_data()
-
 templates = Jinja2Templates(directory="core/templates")
+
+formatted_data = []#sensors.get_formatted_data()
+
+async def update_sensor_data():
+    global formatted_data
+    while True:
+        # Update the formatted data every 30 minutes
+        formatted_data = sensors.get_formatted_data()
+        await asyncio.sleep(1800)  # 1800 seconds = 30 minutes
+
+@app.on_event("startup")
+async def startup_event():
+    # Start the background task to update sensor data every 30 minutes
+    asyncio.create_task(update_sensor_data())
+
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
