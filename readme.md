@@ -1,7 +1,7 @@
 # Airedellín 🌿
 
 
-![]()
+![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/2.png)
 
 
 Welcome to **Airedellín**, a PM2.5 visualizer designed to monitor and improve the air quality in Medellín! 🌆✨
@@ -58,6 +58,13 @@ To get started with Airedellín, follow these steps:
 4. **Access the web interface**:
 
     Open your browser and go to `http://localhost:9600` to start exploring the air quality data of Medellín! 🌍✨
+
+## Screenshots 🎑
+
+![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/1.png)
+![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/3.png)
+![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/4.png)
+
 
 ## Contributing 🤝
 
