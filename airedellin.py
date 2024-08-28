@@ -3,7 +3,6 @@
 """
 airedellin - 2024 - by MLEAFIT
 """
-#import core.main
 
 from core.main import *
 from core.main import app

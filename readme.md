@@ -45,7 +45,7 @@ To get started with Airedellín, follow these steps:
         ```bash
         pip install -r requirements.txt
         ```
-
+    - Rember add a file token and the token of maptiler in data/token.txt
 
 3. **Start the application**:
 
