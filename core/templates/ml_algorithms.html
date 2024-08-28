@@ -51,10 +51,10 @@
 
         <!-- Machine Learning Algorithms Section -->
         <div class="section frame">
+            <form method="post" action="">
             <h2>Machine Learning Algorithms</h2>
             <p>Select an ML algorithm to analyze your data:</p>
             <div class="form-group">
-            <form method="post" action="">
                 <label for="algorithmSelect">Choose Algorithm:</label>
                 <select class="form-control" id="algorithmSelect" name="algorithm">
                     {% for name in algorithm_names %}
@@ -62,9 +62,9 @@
                     {% endfor %}
                 </select>
             </div>
+            <button class="btn btn-primary btn-lg" type="submmit">Run Algorithm</button>
+            <div id="mlResult" class="mt-3">{{ result }}</div>
             </form>
-            <button class="btn btn-primary btn-lg" onclick="runMLAlgorithm()">Run Algorithm</button>
-            <div id="mlResult" class="mt-3"></div>
         </div>
     </div>
 
@@ -75,12 +75,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        // Sample data for the chart
+        const dataArray = {{ data }};  // Replace with your data source
+        const numLabels = dataArray.length;
+
+        // Generate labels based on the length of the data
+        const labels = Array.from({ length: numLabels }, (_, index) => index);
+
         const ctx = document.getElementById('dataChart').getContext('2d');
         const dataChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                labels: labels,
                 datasets: [{
                     label: 'Sample Data',
                     data: {{ data }},

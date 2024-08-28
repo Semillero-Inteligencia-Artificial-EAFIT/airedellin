@@ -1,46 +1,69 @@
-from statsmodels.tsa.statespace.sarimax import SARIMAX
-import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+from statsmodels.tsa.arima.model import ARIMA
 
-def timex2(time):
-  newTime = []
-  numVales = len(time)
-  for i in time:
-    newTime.append(numVales+i)
-  return time + newTime
+import pandas as pd
 
-class pred():
-	def __init__(self,data):
-		self.data = data
-	def predDataSarimax(self):
-		self.timeser = list(range(len(self.data)))
-		self.timeser2 = timex2(self.timeser) # time use for prediction
-		#model = SARIMAX(endog = self.data,exog = self.timeser , order=(1,2,1), seasonal_order=(1,1,1,24))	
-		model = SARIMAX(self.data, order=(0,0,0),seasonal_order=(1,1,1,24))
-		self.predictions = list(model.fit().predict())
-		return self.predictions
-	"""
-	def predDataLineal(self):
-		import numpy as np
-		timeser = np.asanyarray(self.timeser).reshape((1,-1))
-		data = np.asanyarray(self.data).reshape((1,-1))
-		timeser = timeser
-		#y = data 
-		sumy = np.sum(data)
-		b = sumy/len(timeser)
-		for i in range(len(timeser)):
-		w = ((timeser[i]*timeser)-(pm25s[i]*pm25s))/((timeser[i]*timeser)**2)
-		prediction = w*timeser+b
-		for x in timeser:
-			for y2 in y:
-				filtred = np.polyfit(x, y2, 1)
-		predictions = np.polyval(filtred, timeser)
-		Y = np.polyval(predictions, timeser)
-	"""
-	def saveImg(self,pathName):	
-		plt.xlabel("time (as amout of data)")
-		plt.ylabel("pm25")
-		plt.title("prediction")
-		plt.plot(self.timeser,self.data,"bo",label="data")
-		plt.plot(self.timeser2,self.data+self.predictions,"g-",label="prediction")
-		plt.savefig(pathName+'.png')
-		plt.clf() 
+
+def linear_regresion(y, num_pred=100):
+  # Convert y to a numpy array and check if it's not empty
+  y = np.array(y)
+  if y.size == 0:
+      raise ValueError("The input array y is empty.")
+  
+  # Generate x values as a 2D array with one feature (i.e., time steps)
+  x = np.arange(len(y)).reshape(-1, 1)
+  
+  # Reshape y to be a 1D array for the target variable
+  y = y.reshape(-1, 1)
+  
+  # Check if the dataset is large enough for splitting
+  if len(y) <= 1:
+      raise ValueError("The dataset is too small to split.")
+  
+  # Split data into training and test sets
+  x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+  
+  # Initialize and fit the model
+  model = LinearRegression()
+  model.fit(x_train, y_train)
+  
+  # Predict on the test set
+  y_pred = model.predict(x_test)
+  mse = mean_squared_error(y_test, y_pred)
+
+  # Predict future values
+  future_time = np.arange(len(y), len(y) + num_pred).reshape(-1, 1)  # Generate future time steps
+  predicted_pm25 = model.predict(future_time)
+  
+  return list(predicted_pm25.flatten()), float(mse)  # Flatten predicted_pm25 for easy reading
+
+def arima(y, order=(5, 1, 0), forecast_steps=100):
+  data = pd.Series(y)
+  if not isinstance(data, pd.Series):
+      raise ValueError("Data should be a pandas Series.")
+
+  # Fit the ARIMA model
+  model = ARIMA(data, order=order)
+  model_fit = model.fit()
+
+  # Forecast the next values
+  forecast = model_fit.forecast(steps=forecast_steps)
+  
+  # To compute the MSE, we need to have the true values; assuming we have a dataset to compare with
+  # For this example, we'll assume the last part of the data is held out for testing
+  train_size = len(data) - forecast_steps
+  train_data = data[:train_size]
+  test_data = data[train_size:]
+  
+  # Fit the model again on the training data and forecast
+  model_test = ARIMA(train_data, order=order)
+  model_test_fit = model_test.fit()
+  predictions = model_test_fit.forecast(steps=forecast_steps)
+  
+  # Compute the Mean Squared Error
+  mse = mean_squared_error(test_data, predictions[:len(test_data)])
+  
+  return list(forecast), float(mse)

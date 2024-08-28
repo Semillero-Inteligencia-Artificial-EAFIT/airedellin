@@ -7,7 +7,7 @@ import random
 import asyncio
 
 from .tools.dataTool import Sensors
-# from .tools.pred import pred
+from .tools.pred import linear_regresion,arima
 # from .tools.const import *
 from .tools.tools import *
 
@@ -18,7 +18,14 @@ host = "influxdb.canair.io"
 sensors = Sensors("canairio", host)
 templates = Jinja2Templates(directory="core/templates")
 
-formatted_data = []#sensors.get_formatted_data()
+algorithm_names = ["linearRegression", "Arima", "neuralNetwork","Sarima"]
+algorithm_map = {
+    "linearRegression": linear_regresion,
+    "Arima": arima,
+    #"neuralNetwork": neural_network,
+}
+
+formatted_data = []
 
 async def update_sensor_data():
     global formatted_data
@@ -72,12 +79,14 @@ async def sensor(request: Request, sensor_name: str):
 @app.get("/{sensor_name}/predictions", response_class=HTMLResponse)
 async def get_mlalgorithm(request: Request, sensor_name: str):
     random_list = [random.randint(0, 55) for _ in range(200)]
-    algorithm_names = ["linearRegression", "decisionTree", "neuralNetwork","Sarima"]
-    
+    data = sensors.data(sensor_name)[10:]
+    #data = list(map(int,data))
+    data = [int(value) for value in data if value is not None]
+    print(data,random_list)    
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
         "algorithm_names": algorithm_names,
-        "data": random_list,
+        "data": data,
         "result": None
     })
 
@@ -86,27 +95,23 @@ async def post_mlalgorithm(
     request: Request,
     sensor_name: str,
     algorithm: str = Form(...),
-):
+):  
     random_list = [random.randint(0, 55) for _ in range(200)]
-    
-    # Dictionary to map algorithm names to functions
-    algorithm_map = {
-        "linearRegression": linear_regression,
-        "decisionTree": decision_tree,
-        "neuralNetwork": neural_network,
-    }
+    data = sensors.data(sensor_name)
+    data = [int(value) for value in data if value is not None]
+
+    print(data)
     
     # Apply the selected algorithm
     if algorithm in algorithm_map:
-        result = algorithm_map[algorithm](random_list)
+        result = algorithm_map[algorithm](data)
     else:
-        result = random_list  # If no valid algorithm is selected, return the original data
-    
-    algorithm_names = list(algorithm_map.keys())
-    
+        result = [random_list,"THE ALGORITHM SELECTED NOT EXIST"]  # If no valid algorithm is selected, return the original data
+    print(result)
+    print("\n\nalgorithm",algorithm)
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
         "algorithm_names": algorithm_names,
-        "data": random_list,
-        "result": result
+        "data": list(map(int,result[0])),
+        "result": "Error of "+str(result[1])
     })
