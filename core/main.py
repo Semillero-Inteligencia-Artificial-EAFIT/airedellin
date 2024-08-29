@@ -7,22 +7,24 @@ import random
 import asyncio
 
 from .tools.dataTool import Sensors
-from .tools.pred import linear_regresion,arima
+from .tools.pred import linear_regresion,arima,random_forest,sarima
 # from .tools.const import *
 from .tools.tools import *
 
-app = FastAPI()
+app = FastAPI(debug=True)
 
 token = readtxtline("data/token.txt")
 host = "influxdb.canair.io"
 sensors = Sensors("canairio", host)
 templates = Jinja2Templates(directory="core/templates")
 
-algorithm_names = ["linearRegression", "Arima", "neuralNetwork","Sarima"]
+algorithm_names = ["originalData","linearRegression", "Arima", "randomForest","Sarima"]
 algorithm_map = {
     "linearRegression": linear_regresion,
     "Arima": arima,
-    #"neuralNetwork": neural_network,
+    "randomForest": random_forest,
+    "Sarima":sarima,
+
 }
 
 formatted_data = []
@@ -82,7 +84,7 @@ async def get_mlalgorithm(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)[10:]
     #data = list(map(int,data))
     data = [int(value) for value in data if value is not None]
-    print(data,random_list)    
+    #print(data,random_list)    
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
         "algorithm_names": algorithm_names,
@@ -100,15 +102,18 @@ async def post_mlalgorithm(
     data = sensors.data(sensor_name)
     data = [int(value) for value in data if value is not None]
 
-    print(data)
+    #print(data)
     
     # Apply the selected algorithm
     if algorithm in algorithm_map:
         result = algorithm_map[algorithm](data)
+    elif algorithm=="originalData":
+        result = [[int(value) for value in data if value is not None],"0"]
+
     else:
         result = [random_list,"THE ALGORITHM SELECTED NOT EXIST"]  # If no valid algorithm is selected, return the original data
-    print(result)
-    print("\n\nalgorithm",algorithm)
+    print(data[0:20],result[0:20])
+    #print("\n\nalgorithm",algorithm)
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
         "algorithm_names": algorithm_names,
