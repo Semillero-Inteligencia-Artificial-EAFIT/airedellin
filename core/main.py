@@ -7,7 +7,7 @@ import random
 import asyncio
 
 from .tools.dataTool import Sensors
-from .tools.pred import linear_regresion,arima,random_forest,sarima
+from .tools.pred import linear_regresion,arima,random_forest,sarima,lasso
 # from .tools.const import *
 from .tools.tools import *
 
@@ -18,13 +18,13 @@ host = "influxdb.canair.io"
 sensors = Sensors("canairio", host)
 templates = Jinja2Templates(directory="core/templates")
 
-algorithm_names = ["originalData","linearRegression", "Arima", "randomForest","Sarima"]
+algorithm_names = ["originalData","linearRegression", "Arima", "randomForest","Sarima","Lasso"]
 algorithm_map = {
     "linearRegression": linear_regresion,
     "Arima": arima,
     "randomForest": random_forest,
     "Sarima":sarima,
-
+    "Lasso":lasso,
 }
 
 formatted_data = []
@@ -97,6 +97,7 @@ async def get_mlalgorithm(request: Request, sensor_name: str):
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
         "algorithm_names": algorithm_names,
+        "algorithm_selected": "",
         "data": data,
         "result": None
     })
@@ -126,6 +127,7 @@ async def post_mlalgorithm(
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
         "algorithm_names": algorithm_names,
+        "algorithm_selected": algorithm,
         "data": list(map(int,result[0])),
         "result": "Error of "+str(result[1])
     })

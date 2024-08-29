@@ -75,6 +75,14 @@ class Sensors:
         print(self.names())
         for name in self.names():
             coords = self.coordinates(name)
+            pm25=self.data(name)[:10]
+            filtered_arr = [x for x in pm25 if x is not None]
+            #print(pm25)
+            if not filtered_arr:
+                mean_pm25 = 0  # Return None if there are no valid numbers
+            else:
+                mean_pm25 = sum(filtered_arr) / len(filtered_arr)
+            print(mean_pm25)
             if len(self.data(name))==0:
                 continue
             if coords[0] is not None and coords[1] is not None:
@@ -82,7 +90,7 @@ class Sensors:
                     "type": "Feature",
                     "properties": {
                         "name": name,
-                        "pm25": str(self.data(name)[0])  # This will include all PM2.5 data points
+                        "pm25": float(mean_pm25)  # This will include all PM2.5 data points
                     },
                     "geometry": {
                         "type": "Point",
@@ -95,7 +103,7 @@ class Sensors:
                     "type": "Feature",
                     "properties": {
                         "name": name,
-                        "pm25": self.data(name)[0]  # This will include all PM2.5 data points
+                        "pm25": float(mean_pm25)  # This will include all PM2.5 data points
                     },
                     "geometry": {
                         "type": "Point",

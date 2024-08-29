@@ -7,7 +7,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.linear_model import Lasso
 from statsmodels.tsa.stattools import adfuller
+
 import warnings
 
 
@@ -33,7 +35,7 @@ def linear_regresion(y, num_pred=num_pred):
   # Convert y to a numpy array and check if it's not empty
   y = np.array(y)
   if y.size == 0:
-      raise ValueError("The input array y is empty.")
+      return 0,"The input array y is empty."
   
   # Generate x values as a 2D array with one feature (i.e., time steps)
   x = np.arange(len(y)).reshape(-1, 1)
@@ -43,8 +45,8 @@ def linear_regresion(y, num_pred=num_pred):
   
   # Check if the dataset is large enough for splitting
   if len(y) <= 1:
-      raise ValueError("The dataset is too small to split.")
-  
+      return 0,"The dataset is too small to split."
+ 
   # Split data into training and test sets
   x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
   
@@ -80,8 +82,6 @@ def arima(y, order=(2, 1, 2), forecast_steps=num_pred):
   ValueError: If the input data is not a pandas Series.
   """
   data = pd.Series(y)
-  if not isinstance(data, pd.Series):
-      raise ValueError("Data should be a pandas Series.")
 
   # Fit the ARIMA model
   model = ARIMA(data, order=order)
@@ -124,7 +124,7 @@ def random_forest(y,num_pred=num_pred):
 	"""
 	y = np.array(y)
 	if y.size == 0:
-	  return 0
+	  return 0,"Error"
 	  
 	# Generate x values as a 2D array with one feature (i.e., time steps)
 	x = np.arange(len(y)).reshape(-1, 1)
@@ -134,7 +134,7 @@ def random_forest(y,num_pred=num_pred):
 
 	# Check if the dataset is large enough for splitting
 	if len(y) <= 1:
-	    raise ValueError("The dataset is too small to split.")
+	    return 0,"The dataset is too small to split."
 
 	# Dividir los datos en conjuntos de entrenamiento y prueba
 	X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
@@ -187,3 +187,57 @@ def sarima(x, order=(1, 1, 1), seasonal_order=(1, 1, 1, 12), train_size=0.8, for
     mse = mean_squared_error(test, forecast[:len(test)])
 
     return forecast, mse
+
+def lasso(y, num_pred=num_pred, alpha=1.0):
+    """
+    Perform Lasso regression and return predictions and Mean Squared Error (MSE).
+    
+    Parameters:
+    -----------
+    X : array-like
+        Feature matrix.
+        
+    y : array-like
+        Target variable.
+        
+    num_pred : int, optional
+        Number of predictors (currently unused). Default is num_pred.
+        
+    alpha : float, optional
+        Regularization strength. Default is 1.0.
+        
+    Returns:
+    --------
+    list : Predicted values.
+    float : Mean Squared Error (MSE).
+    """
+    y = np.array(y)
+    if y.size == 0:
+      return 0,"Error"
+      
+    # Generate x values as a 2D array with one feature (i.e., time steps)
+    x = np.arange(len(y)).reshape(-1, 1)
+
+    # Reshape y to be a 1D array for the target variable
+    y = y.reshape(-1, 1)
+
+    # Check if the dataset is large enough for splitting
+    if len(y) <= 1:
+        return 0, "The dataset is too small to split."
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42)
+    
+    # Initialize Lasso model with the specified alpha (regularization strength)
+    model = Lasso(alpha=alpha)
+    
+    # Fit the model on the training data
+    model.fit(X_train, y_train)
+    
+    # Predict the target variable on the test data
+    predicted_pm25 = model.predict(X_test)
+    
+    # Calculate the Mean Squared Error (MSE)
+    mse = mean_squared_error(y_test, predicted_pm25)
+    
+    # Return the predictions and the MSE
+    return list(predicted_pm25.flatten()), float(mse)
