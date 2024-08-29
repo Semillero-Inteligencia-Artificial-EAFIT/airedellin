@@ -52,7 +52,7 @@ async def index(request: Request):
         },
         {
             'type': 'Feature',
-            'properties': {'name': 'Jardin des Plantes', 'pm25': 5},
+            'properties': {'name': 'Jardin des Plantes', 'pm25': 39},
             'geometry': {'type': 'Point', 'coordinates': [2.359823, 48.843995]},
         },
         {
@@ -62,7 +62,7 @@ async def index(request: Request):
         },
         {
             'type': 'Feature',
-            'properties': {'name': 'Parc de Bercy', 'pm25': 12},
+            'properties': {'name': 'Parc de Bercy', 'pm25': 58},
             'geometry': {'type': 'Point', 'coordinates': [2.382094, 48.835962]},
         },
         {

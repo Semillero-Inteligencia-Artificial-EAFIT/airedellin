@@ -65,14 +65,15 @@
   };
 
   function initializeOverlay() {
-    const colorPalette = [
-      [0, 255, 0],    // Green
-      [255, 255, 0],  // Yellow
-      [255, 165, 0],  // Orange
-      [255, 0, 0],    // Red
-      [128, 0, 128],  // Purple
-      [0, 0, 0]       // Black
-    ];
+const colorPalette = [
+  [153, 255, 153],  // Pastel Green
+  [255, 255, 153],  // Pastel Yellow
+  [255, 204, 153],  // Pastel Orange
+  [255, 153, 153],  // Pastel Red
+  [204, 153, 204],  // Pastel Purple
+  [153, 153, 153]   // Pastel Gray (softened Black)
+];
+
     const scatterplotLayer = new deck.ScatterplotLayer({
       id: 'scatterplotLayer',
       data: sampleData.features,
@@ -267,7 +268,7 @@ map.addLayer({
 });  
 
 const toggleButton = document.querySelector('#toggle-button');
-let heatmapVisible = true;
+let heatmapVisible = false;
 
 toggleButton.addEventListener('click', () => {
   if (heatmapVisible) {

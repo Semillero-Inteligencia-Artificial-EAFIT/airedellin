@@ -56,6 +56,12 @@
             background-color: #007bff;
             border-color: #007bff;
         }
+        .chart-frame {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            background: #f7faff;
+            padding: 15px;
+        }
     </style>
 </head>
 <body>
@@ -93,7 +99,8 @@
                 const dataArray = {{ data }};  // Replace with your data source
                 const numLabels = dataArray.length;
 
-                const colorPalette = ['#00e400', '#ffff00', '#ff7e00', '#ff0000', '#8f3f97', '#7e0023'];
+                //const colorPalette = ['#00e400', '#ffff00', '#ff7e00', '#ff0000', '#8f3f97', '#7e0023'];
+                const colorPalette = ['#77ff77', '#ffffcc', '#ffb380', '#ff8080', '#cc99cc', '#cc6677'];
 
                 function getColor(pm25) {
                     if (pm25 > 150) {
@@ -127,7 +134,7 @@
                                 const value = context.dataset.data[index];
                                 return getColor(value);
                             },
-                            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                            backgroundColor: 'rgba(157, 169, 235, 0.01)',
                             borderWidth: 2,
                             pointRadius: 4,
                             pointHoverRadius: 6,
@@ -183,7 +190,6 @@
                 document.getElementById('resetZoom').addEventListener('click', () => {
                     dataChart.resetZoom();
                 });
-            ctx.canvas.parentNode.style.backgroundColor = '#f0f0f0';
 
             </script>
 

@@ -84,74 +84,102 @@
 
 
     <script>
-        const dataArray = {{ data }};  // Replace with your data source
-        const numLabels = dataArray.length;
+    const dataArray = {{ data }};  // Replace with your data source
+    const numLabels = dataArray.length;
 
-        // Generate labels based on the length of the data
-        const labels = Array.from({ length: numLabels }, (_, index) => index);
+    //const colorPalette = ['#00e400', '#ffff00', '#ff7e00', '#ff0000', '#8f3f97', '#7e0023'];
+    const colorPalette = ['#77ff77', '#ffffcc', '#ffb380', '#ff8080', '#cc99cc', '#cc6677'];
 
-        const ctx = document.getElementById('dataChart').getContext('2d');
-        const dataChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Sample Data',
-                    data: {{ data }},
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                    borderWidth: 2,
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'measurements (30s)'  // Label for the x-axis
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'pm2.5 μg/m³'  // Label for the y-axis
-                        }
-                    }                
+    function getColor(pm25) {
+        if (pm25 > 150) {
+            return colorPalette[5]; // Black
+        } else if (pm25 > 100) {
+            return colorPalette[4]; // Purple
+        } else if (pm25 > 55) {
+            return colorPalette[3]; // Red
+        } else if (pm25 > 35) {
+            return colorPalette[2]; // Orange
+        } else if (pm25 > 12) {
+            return colorPalette[1]; // Yellow
+        } else {
+            return colorPalette[0]; // Green
+        }
+    }
+
+    // Generate labels based on the length of the data
+    const labels = Array.from({ length: numLabels }, (_, index) => index);
+    //change labels by date
+    const ctx = document.getElementById('dataChart').getContext('2d');
+   const dataChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'PM2.5 μg/m³',
+                data: {{ data }},
+                borderColor: function(context) {
+                    const index = context.dataIndex;
+                    const value = context.dataset.data[index];
+                    return getColor(value);
                 },
-                plugins: {
-                    zoom: {
-                        pan: {
-                            enabled: true,
-                            mode: 'xy',
-                        },
-                        zoom: {
-                            wheel: {
-                                enabled: true,
-                            },
-                            pinch: {
-                                enabled: true
-                            },
-                            mode: 'xy',
-                        }
+                backgroundColor: 'rgba(157, 169, 235, 0.01)',
+                borderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Measurements (30s)'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'PM2.5 μg/m³'
                     }
                 }
-            }
-        });
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'xy',
+                    },
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                        },
+                        pinch: {
+                            enabled: true
+                        },
+                        mode: 'xy',
+                    }
+                }
+            },
+            responsive: true,
+        }
+    });
 
-        // Zoom control buttons
-        document.getElementById('zoomIn').addEventListener('click', () => {
-            dataChart.zoom(1.1);
-        });
+    // Zoom control buttons
+    document.getElementById('zoomIn').addEventListener('click', () => {
+        dataChart.zoom(1.1);
+    });
 
-        document.getElementById('zoomOut').addEventListener('click', () => {
-            dataChart.zoom(0.9);
-        });
+    document.getElementById('zoomOut').addEventListener('click', () => {
+        dataChart.zoom(0.9);
+    });
 
-        document.getElementById('resetZoom').addEventListener('click', () => {
-            dataChart.resetZoom();
-        });
+    document.getElementById('resetZoom').addEventListener('click', () => {
+        dataChart.resetZoom();
+    });
+
     </script>
+
 </body>
 </html>
