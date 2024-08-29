@@ -76,15 +76,24 @@ async def index(request: Request):
 
 @app.get("/{sensor_name}", response_class=HTMLResponse)
 async def sensor(request: Request, sensor_name: str):
-    return templates.TemplateResponse("sensors.html", {"request": request, "sensor_name": sensor_name})
+    data = sensors.data(sensor_name)
+    data = [int(value) for value in data if value is not None]
+
+    return templates.TemplateResponse("sensors.html", {
+        "request": request,
+        "sensor_name": sensor_name,
+        "data": data,
+    })
+    #return templates.TemplateResponse("sensors.html", {"request": request, "sensor_name": sensor_name})
+
+
+
 
 @app.get("/{sensor_name}/predictions", response_class=HTMLResponse)
 async def get_mlalgorithm(request: Request, sensor_name: str):
-    random_list = [random.randint(0, 55) for _ in range(200)]
-    data = sensors.data(sensor_name)[10:]
-    #data = list(map(int,data))
+    data = sensors.data(sensor_name)
     data = [int(value) for value in data if value is not None]
-    #print(data,random_list)    
+
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
         "algorithm_names": algorithm_names,
@@ -98,11 +107,9 @@ async def post_mlalgorithm(
     sensor_name: str,
     algorithm: str = Form(...),
 ):  
-    random_list = [random.randint(0, 55) for _ in range(200)]
     data = sensors.data(sensor_name)
-    data = [int(value) for value in data if value is not None]
+    data = [int(value) for value in data if (value is not None and 0<value<1024)]
 
-    #print(data)
     
     # Apply the selected algorithm
     if algorithm in algorithm_map:
@@ -111,9 +118,11 @@ async def post_mlalgorithm(
         result = [[int(value) for value in data if value is not None],"0"]
 
     else:
+        random_list = [random.randint(0, 55) for _ in range(200)]
         result = [random_list,"THE ALGORITHM SELECTED NOT EXIST"]  # If no valid algorithm is selected, return the original data
-    print(data[0:20],result[0:20])
-    #print("\n\nalgorithm",algorithm)
+    
+    #print(data[0:20],result[0:20]) # for debug
+
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
         "algorithm_names": algorithm_names,

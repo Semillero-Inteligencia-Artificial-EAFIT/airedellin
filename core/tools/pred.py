@@ -107,21 +107,21 @@ def arima(y, order=(2, 1, 2), forecast_steps=num_pred):
   return list(forecast), float(mse)
 
 def random_forest(y,num_pred=num_pred):
-  """
-  Train a Random Forest regressor on time series data and predict future values.
+	"""
+	Train a Random Forest regressor on time series data and predict future values.
 
-  Parameters:
-  y (array-like): The input time series data.
-  num_pred (int): The number of future time steps to predict. Default is the value of `num_pred`.
+	Parameters:
+	y (array-like): The input time series data.
+	num_pred (int): The number of future time steps to predict. Default is the value of `num_pred`.
 
-  Returns:
-  tuple: A tuple containing:
-      - list: Predicted future values of the time series.
-      - float: R-squared score of the model on the test set.
-  
-  Raises:
-  ValueError: If the input array `y` is empty or if the dataset is too small to split.
-  """
+	Returns:
+	tuple: A tuple containing:
+	    - list: Predicted future values of the time series.
+	    - float: R-squared score of the model on the test set.
+
+	Raises:
+	ValueError: If the input array `y` is empty or if the dataset is too small to split.
+	"""
 	y = np.array(y)
 	if y.size == 0:
 	  return 0

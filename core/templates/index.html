@@ -28,6 +28,12 @@
       }
       #toggle-button:hover { scale: 1.1; box-shadow: 0 0 4px 4px gray; }
       .maplibregl-popup { z-index: 2; }
+      .text-primary:hover {
+        color: #0d6efd !important; /* Bootstrap's primary color */
+      }
+      .text-success:hover {
+        color: #198754 !important; /* Bootstrap's success color */
+      }
     </style>
   </head>
   <body>
@@ -102,12 +108,21 @@
       onClick: (info) => {
         const { coordinate, object } = info;
         const description = `
-          <div>
-            <p><strong>Name:</strong><a href="/${object.properties.name}"> ${object.properties.name}</a></p>
-            <p><strong>Mean of pm25:</strong> <a href="">${object.properties.pm25}</p>
+          <div class="p-3 border rounded bg-light shadow-sm">
+            <p><strong>Name:</strong> 
+              <a href="/${object.properties.name}" class="text-primary text-decoration-none" style="transition: color 0.2s;">
+                ${object.properties.name}
+              </a> 
+              <span class="text-muted">Click to see measures</span>
+            </p>
+            <p><strong>Mean of pm25:</strong> 
+              <a href="http://influxdb.canair.io:8000/dashboards" class="text-success text-decoration-none" style="transition: color 0.2s;">
+                ${object.properties.pm25}
+              </a> 
+              <span class="text-muted">Click to see the original dashboard</span>
+            </p>
           </div>
         `;
-
         new maplibregl.Popup()
           .setLngLat(coordinate)
           .setHTML(description)
