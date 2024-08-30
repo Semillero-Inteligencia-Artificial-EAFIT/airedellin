@@ -47,27 +47,27 @@ async def index(request: Request):
     data = [
         {
             'type': 'Feature',
-            'properties': {'name': 'Jardins du Trocadéro', 'pm25': 16},
+            'properties': {'name': 'Jardins du Trocadéro(not working)', 'pm25': 16},
             'geometry': {'type': 'Point', 'coordinates': [2.289207, 48.861561]},
         },
         {
             'type': 'Feature',
-            'properties': {'name': 'Jardin des Plantes', 'pm25': 39},
+            'properties': {'name': 'Jardin des Plantes(not working)', 'pm25': 39},
             'geometry': {'type': 'Point', 'coordinates': [2.359823, 48.843995]},
         },
         {
             'type': 'Feature',
-            'properties': {'name': 'Jardins das Tulherias', 'pm25': 9999},
+            'properties': {'name': 'Jardins das Tulherias(not working)', 'pm25': 9999},
             'geometry': {'type': 'Point', 'coordinates': [2.327092, 48.863608]},
         },
         {
             'type': 'Feature',
-            'properties': {'name': 'Parc de Bercy', 'pm25': 58},
+            'properties': {'name': 'Parc de Bercy(not working)', 'pm25': 58},
             'geometry': {'type': 'Point', 'coordinates': [2.382094, 48.835962]},
         },
         {
             'type': 'Feature',
-            'properties': {'name': 'Jardin du Luxemburg', 'pm25': 6},
+            'properties': {'name': 'Jardin du Luxemburg(not working)', 'pm25': 6},
             'geometry': {'type': 'Point', 'coordinates': [2.336975, 48.846421]},
         },
     ] + formatted_data
@@ -84,10 +84,12 @@ async def sensor(request: Request, sensor_name: str):
         "sensor_name": sensor_name,
         "data": data,
     })
-    #return templates.TemplateResponse("sensors.html", {"request": request, "sensor_name": sensor_name})
 
-
-
+@app.get("/index", response_class=HTMLResponse)
+async def landing_page(request: Request, sensor_name: str):
+    return templates.TemplateResponse("landing_page.html", {
+        "request": request
+    })
 
 @app.get("/{sensor_name}/predictions", response_class=HTMLResponse)
 async def get_mlalgorithm(request: Request, sensor_name: str):

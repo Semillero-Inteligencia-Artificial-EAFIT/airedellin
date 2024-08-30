@@ -41,10 +41,10 @@ class Sensors:
         names = [item['name'] for item in result.get_points()]
         return names
         """
-    def data(self, name):
+    def data(self, name,time="24h"):
         query = (
             "SELECT mean(\"pm25\") AS \"data\" FROM \"fixed_stations_01\" "
-            f"WHERE \"name\" = '{name}' AND time >= now() - 24h "
+            f"WHERE \"name\" = '{name}' AND time >= now() - {time} "
             "GROUP BY time(30s) fill(null) ORDER BY time ASC"
         )
 
