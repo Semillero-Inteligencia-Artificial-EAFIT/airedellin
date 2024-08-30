@@ -75,8 +75,31 @@ async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "token": token, "data": data})
 
 @app.get("/{sensor_name}", response_class=HTMLResponse)
-async def sensor(request: Request, sensor_name: str):
+async def get_sensor(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)
+    data = [int(value) for value in data if value is not None]
+
+    return templates.TemplateResponse("sensors.html", {
+        "request": request,
+        "sensor_name": sensor_name,
+        "data": data,
+    })
+
+@app.post("/{sensor_name}")
+async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form("24h")):
+    range_option = rangetime  # This value comes directly from the form submission
+    print(range_option)
+    # You might need to map range_option to the format your sensors.data function expects
+    if range_option == "1w":
+        time_range = "7d"
+    elif range_option == "1m":
+        time_range = "4w"
+    elif range_option == "1y":
+        time_range = "182d"
+    else:
+        time_range = "24h"
+    print(time_range)
+    data = sensors.data(sensor_name, time_range)
     data = [int(value) for value in data if value is not None]
 
     return templates.TemplateResponse("sensors.html", {
