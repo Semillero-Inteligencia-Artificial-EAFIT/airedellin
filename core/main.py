@@ -77,14 +77,8 @@ async def index(request: Request):
 
     return templates.TemplateResponse("index.html", {"request": request, "token": token, "data": data})
 
-@app.get("/index", response_class=HTMLResponse)
-async def landing_page(request: Request):
-    return templates.TemplateResponse("landing_page.html", {
-        "request": request
-    })
 
-
-@app.get("/{sensor_name}", response_class=HTMLResponse)
+@app.get("/sensor{sensor_name}", response_class=HTMLResponse)
 async def get_sensor(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)
     data = [int(value) for value in data if value is not None]
@@ -95,7 +89,7 @@ async def get_sensor(request: Request, sensor_name: str):
         "data": data,
     })
 
-@app.post("/{sensor_name}")
+@app.post("/sensor{sensor_name}")
 async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form("24h")):
     range_option = rangetime  # This value comes directly from the form submission
     print(range_option)
@@ -118,7 +112,7 @@ async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form(
         "data": data,
     })
 
-@app.get("/{sensor_name}/predictions", response_class=HTMLResponse)
+@app.get("/sensor{sensor_name}/predictions", response_class=HTMLResponse)
 async def get_mlalgorithm(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)
     data = [int(value) for value in data if value is not None]
@@ -131,7 +125,7 @@ async def get_mlalgorithm(request: Request, sensor_name: str):
         "result": None
     })
 
-@app.post("/{sensor_name}/predictions", response_class=HTMLResponse)
+@app.post("/sensor{sensor_name}/predictions", response_class=HTMLResponse)
 async def post_mlalgorithm(
     request: Request,
     sensor_name: str,
@@ -159,4 +153,17 @@ async def post_mlalgorithm(
         "algorithm_selected": algorithm,
         "data": list(map(int,result[0])),
         "result": "Error of "+str(result[1])
+    })
+
+
+@app.get("/index", response_class=HTMLResponse)
+async def landing_page(request: Request):
+    return templates.TemplateResponse("landing_page.html", {
+        "request": request
+    })
+
+@app.get("/add_donation", response_class=HTMLResponse)
+async def add_donation(request: Request):
+    return templates.TemplateResponse("add_donation.html", {
+        "request": request
     })

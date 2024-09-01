@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airedellin</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/landing_page.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 800px;
+        }
+        .form-control {
+            margin-bottom: 15px;
+        }
+        .image-preview {
+            margin-top: 10px;
+            max-width: 100%;
+            max-height: 300px;
+            display: none;
+        }
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .custom-file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- JavaScript for Image Preview -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('qrCode').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imagePreview = document.getElementById('imagePreview');
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    document.getElementById('imagePreview').style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+    <!-- Watercolor Background -->
+    <div class="watercolor-bg"></div>
+
+    <!-- Header -->
+    <header>
+        <h1>Airedellin</h1>
+        <nav>
+            <a href="#air-quality">Air Quality</a>
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#login-register">Login/Register</a>
+        </nav>
+    </header>
+
+    <!-- Data Entry Form Section -->
+    <section id="data-entry" class="data-entry">
+        <div class="container">
+            <h1 class="text-center">Data Entry Form</h1>
+            <form>
+
+                <!-- Account or Hash Input -->
+                <div class="form-group">
+                    <label for="account">Account or Hash</label>
+                    <input type="text" class="form-control" id="account" placeholder="Enter Account or Hash identification for user donations">
+                </div>
+
+                <!-- Hash Input -->
+                <div class="form-group">
+                    <label for="hash">Type of Entity for Donations</label>
+                    <input type="text" class="form-control" id="hash" placeholder="Bitcoin, Ethereum, PayPal, Bancolombia, etc.">
+                </div>
+
+                <!-- Sensor Name Input -->
+                <div class="form-group">
+                    <label for="sensorName">Sensor Name</label>
+                    <input type="text" class="form-control" id="sensorName" placeholder="Enter sensor name">
+                </div>
+
+                <!-- QR Code Input -->
+                <div class="form-group">
+                    <label for="qrCode" class="custom-file-upload">Upload QR Code</label>
+                    <input type="file" class="custom-file-input" id="qrCode" accept="image/*">
+                    <img id="imagePreview" class="image-preview" alt="QR Code Preview">
+                </div>
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Airedellin. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
