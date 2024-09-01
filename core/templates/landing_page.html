@@ -3,158 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watercolor Landing Page</title>
-    <style>
-        /* Base Styles */
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Lora', serif;
-            background: #f0f4f8;
-            color: #333;
-        }
-
-        /* Watercolor Background */
-        .watercolor-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/watercolor-texture.png');
-            background-size: cover;
-            z-index: -1;
-        }
-
-        /* Header Styles */
-        header {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 36px;
-            color: #5b7db1;
-        }
-
-        nav {
-            margin-top: 10px;
-        }
-
-        nav a {
-            color: #5b7db1;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 18px;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #333;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 80vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: url('https://www.transparenttextures.com/patterns/watercolor-texture.png');
-            background-size: cover;
-            position: relative;
-        }
-
-        .hero h2 {
-            font-size: 48px;
-            color: #333;
-            margin: 0;
-            animation: fadeIn 2s ease-in-out;
-        }
-
-        .hero p {
-            font-size: 24px;
-            margin-top: 10px;
-            color: #555;
-        }
-
-        /* Keyframe Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Section Styles */
-        section {
-            padding: 60px 20px;
-            text-align: center;
-        }
-
-        .about, .services, .contact {
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            margin: 20px;
-        }
-
-        .services .card {
-            display: inline-block;
-            width: 30%;
-            margin: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .services .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .services .card h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #5b7db1;
-        }
-
-        .services .card p {
-            font-size: 16px;
-            color: #555;
-        }
-
-        /* Button Styles */
-        .btn {
-            background-color: #5b7db1;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #333;
-            transform: scale(1.05);
-        }
-
-        /* Footer */
-        footer {
-            background: #5b7db1;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        footer p {
-            margin: 0;
-            font-size: 14px;
-        }
+    <title>Airedellin</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/landing_page.css">
 
     </style>
 </head>
@@ -165,19 +15,20 @@
 
     <!-- Header -->
     <header>
-        <h1>Your Company</h1>
+        <h1>Airedellin</h1>
         <nav>
+            <a href="#air-quality">Air Quality</a>
             <a href="#about">About</a>
             <a href="#services">Services</a>
-            <a href="#contact">Contact</a>
+            <a href="#login-register">Login/Register</a>
         </nav>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
         <div>
-            <h2>Welcome to Our Website</h2>
-            <p>Your success is our mission</p>
+            <h2>Welcome to Airedellin</h2>
+            <p>Empowering Communities with Air Quality Insights</p>
             <button class="btn">Get Started</button>
         </div>
     </section>
@@ -185,35 +36,78 @@
     <!-- About Section -->
     <section id="about" class="about">
         <h2>About Us</h2>
-        <p>We are a dedicated team of professionals offering top-notch services to help you achieve your goals.</p>
+        <p>We are a dedicated team participating in NASA's Space Apps Challenge, offering solutions to monitor and predict air quality for better urban living.</p>
     </section>
 
     <!-- Services Section -->
     <section id="services" class="services">
         <h2>Our Services</h2>
         <div class="card">
-            <h3>Service One</h3>
-            <p>Details about the service you provide.</p>
+            <h3>Data Collection</h3>
+            <p>We gather real-time air quality data using advanced sensors.</p>
         </div>
         <div class="card">
-            <h3>Service Two</h3>
-            <p>Details about the service you provide.</p>
+            <h3>Prediction Models</h3>
+            <p>We employ AI-driven models to predict air quality trends.</p>
         </div>
         <div class="card">
-            <h3>Service Three</h3>
-            <p>Details about the service you provide.</p>
+            <h3>Community Engagement</h3>
+            <p>We provide tools and platforms to help communities take action.</p>
+        </div>
+    </section>
+
+    <!-- Air Quality Section -->
+    <section id="air-quality" class="air-quality">
+        <h2>Air Quality Predictions</h2>
+        <div class="card">
+            <h3>Current Data</h3>
+            <p>View real-time air quality data in your area.</p>
+            <button class="btn">View Data</button>
+        </div>
+        <div class="card">
+            <h3>Forecast</h3>
+            <p>Explore our predictive models for air quality.</p>
+            <button class="btn">See Forecast</button>
+        </div>
+        <div class="card">
+            <h3>Interactive Map</h3>
+            <p>Layer different air quality metrics on an interactive map.</p>
+            <button class="btn">Explore Map</button>
+        </div>
+    </section>
+
+    <!-- Login/Register Section -->
+    <section id="login-register" class="login-register">
+        <h2>Login/Register</h2>
+        <div class="form-container">
+            <h3>Login</h3>
+            <form action="/login" method="post">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+        <div class="form-container">
+            <h3>Register</h3>
+            <form action="/register" method="post">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="submit" value="Register">
+            </form>
         </div>
     </section>
 
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <h2>Contact Us</h2>
-        <p>If you have any questions or need further information, feel free to contact us.</p>
+        <p>If you have any questions, feel free to reach out!</p>
+        <button class="btn">Contact</button>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2024 Your Company. All rights reserved.</p>
+        <p>&copy; 2024 Airedellin. All rights reserved.</p>
     </footer>
 
 </body>

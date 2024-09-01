@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Request, Depends,Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+
 import json
 import random
 
@@ -8,10 +10,11 @@ import asyncio
 
 from .tools.dataTool import Sensors
 from .tools.pred import linear_regresion,arima,random_forest,sarima,lasso
-# from .tools.const import *
+
 from .tools.tools import *
 
 app = FastAPI(debug=True)
+app.mount('/static', StaticFiles(directory='static', html=True), name='static')
 
 token = readtxtline("data/token.txt")
 host = "influxdb.canair.io"
@@ -74,6 +77,13 @@ async def index(request: Request):
 
     return templates.TemplateResponse("index.html", {"request": request, "token": token, "data": data})
 
+@app.get("/index", response_class=HTMLResponse)
+async def landing_page(request: Request):
+    return templates.TemplateResponse("landing_page.html", {
+        "request": request
+    })
+
+
 @app.get("/{sensor_name}", response_class=HTMLResponse)
 async def get_sensor(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)
@@ -106,12 +116,6 @@ async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form(
         "request": request,
         "sensor_name": sensor_name,
         "data": data,
-    })
-
-@app.get("/index", response_class=HTMLResponse)
-async def landing_page(request: Request, sensor_name: str):
-    return templates.TemplateResponse("landing_page.html", {
-        "request": request
     })
 
 @app.get("/{sensor_name}/predictions", response_class=HTMLResponse)

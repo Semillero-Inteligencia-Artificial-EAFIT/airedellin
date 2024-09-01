@@ -10,31 +10,7 @@
     <script src="https://unpkg.com/deck.gl@8.9.33/dist.min.js"></script>
     <script src="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.umd.min.js"></script>
     <link href="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.css" rel="stylesheet" />
-    <style>
-      body { margin: 0; padding: 0; }
-      html, body, #map { height: 100%; }
-      #toggle-button {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background-color: rgb(130, 25, 191);
-        color: #f0ead6;
-        font-size: 1.2rem;
-        min-width: 70px;
-        border-radius: 5px;
-        border: none;
-        padding: 5px 10px;
-        transition: 0.3s;
-      }
-      #toggle-button:hover { scale: 1.1; box-shadow: 0 0 4px 4px gray; }
-      .maplibregl-popup { z-index: 2; }
-      .text-primary:hover {
-        color: #0d6efd !important; /* Bootstrap's primary color */
-      }
-      .text-success:hover {
-        color: #198754 !important; /* Bootstrap's success color */
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
   </head>
   <body>
     <div id="map"></div>
