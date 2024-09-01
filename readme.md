@@ -1,6 +1,8 @@
 # Airedellín 🌿
 <div style="text-align: center;">
-  <img src="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/logo.png" alt="Description" style="width: 50%; height: auto;">
+  <center>
+    <img src="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/logo.png" alt="Description" style="width: 50%; height: auto;">
+  </center>center>
 </div>
 
 Welcome to **Airedellín**, a PM2.5 visualizer designed to monitor and improve the air quality in Medellín! 🌆✨
