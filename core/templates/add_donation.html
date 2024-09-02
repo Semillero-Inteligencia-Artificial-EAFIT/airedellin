@@ -9,55 +9,19 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     
-    <!-- Custom CSS -->
-    <style>
-        body {
-            padding-top: 20px;
-        }
-        .container {
-            max-width: 800px;
-        }
-        .form-control {
-            margin-bottom: 15px;
-        }
-        .image-preview {
-            margin-top: 10px;
-            max-width: 100%;
-            max-height: 300px;
-            display: none;
-        }
-        .custom-file-upload {
-            border: 1px solid #ccc;
-            display: inline-block;
-            padding: 6px 12px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .custom-file-input {
-            display: none;
-        }
-    </style>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/static/js/add_donation.js" type="text/javascript" defer>></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/add_donation.css">
+
 </head>
 <body>
 
     <!-- JavaScript for Image Preview -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('qrCode').addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const imagePreview = document.getElementById('imagePreview');
-                        imagePreview.src = e.target.result;
-                        imagePreview.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    document.getElementById('imagePreview').style.display = 'none';
-                }
-            });
-        });
+
     </script>
 
     <!-- Watercolor Background -->
@@ -67,10 +31,10 @@
     <header>
         <h1>Airedellin</h1>
         <nav>
-            <a href="#air-quality">Air Quality</a>
-            <a href="#about">About</a>
-            <a href="#services">Services</a>
-            <a href="#login-register">Login/Register</a>
+            <a href="/index#air-quality">Air Quality</a>
+            <a href="/index#about">About</a>
+            <a href="/index#services">Services</a>
+            <a href="/index#login-register">Login/Register</a>
         </nav>
     </header>
 
@@ -115,9 +79,6 @@
         <p>&copy; 2024 Airedellin. All rights reserved.</p>
     </footer>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

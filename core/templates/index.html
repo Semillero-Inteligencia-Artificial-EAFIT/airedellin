@@ -41,14 +41,14 @@
   };
 
   function initializeOverlay() {
-const colorPalette = [
-  [153, 255, 153],  // Pastel Green
-  [255, 255, 153],  // Pastel Yellow
-  [255, 204, 153],  // Pastel Orange
-  [255, 153, 153],  // Pastel Red
-  [204, 153, 204],  // Pastel Purple
-  [153, 153, 153]   // Pastel Gray (softened Black)
-];
+    const colorPalette = [
+      [153, 255, 153],  // Pastel Green
+      [255, 255, 153],  // Pastel Yellow
+      [255, 204, 153],  // Pastel Orange
+      [255, 153, 153],  // Pastel Red
+      [204, 153, 204],  // Pastel Purple
+      [153, 153, 153]   // Pastel Gray (softened Black)
+    ];
 
     const scatterplotLayer = new deck.ScatterplotLayer({
       id: 'scatterplotLayer',
@@ -136,126 +136,124 @@ const colorPalette = [
     overlay = new deck.MapboxOverlay({ layers: [scatterplotLayer] });
     map.addControl(overlay);
   }
-
-
   let show = true;
 
   map.on('load', () => {
-    initializeOverlay();
+  initializeOverlay();
 
-    // Insert the layer beneath any symbol layer.
-    const layers = map.getStyle().layers;
-    let labelLayerId;
-    for (let i = 0; i < layers.length; i++) {
-      if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
-        labelLayerId = layers[i].id;
-        break;
-      }
+  // Insert the layer beneath any symbol layer.
+  const layers = map.getStyle().layers;
+  let labelLayerId;
+  for (let i = 0; i < layers.length; i++) {
+    if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+      labelLayerId = layers[i].id;
+      break;
     }
-    map.addSource('openmaptiles', {
-      url: `https://api.maptiler.com/tiles/v3/tiles.json?key=${MAPTILER_KEY}`,
-      type: 'vector',
-    });
-    map.addLayer({
-      'id': '3d-buildings',
-      'source': 'openmaptiles',
-      'source-layer': 'building',
-      'type': 'fill-extrusion',
-      'minzoom': 15,
-      'filter': ['!=', ['get', 'hide_3d'], true],
-      'paint': {
-        'fill-extrusion-color': [
-          'interpolate',
-          ['linear'],
-          ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
-        ],
-        'fill-extrusion-height': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          15, 0,
-          16, ['get', 'render_height']
-        ],
-        'fill-extrusion-base': ['case',
-          ['>=', ['get', 'zoom'], 16],
-          ['get', 'render_min_height'], 0
-        ]
+  }
+  map.addSource('openmaptiles', {
+    url: `https://api.maptiler.com/tiles/v3/tiles.json?key=${MAPTILER_KEY}`,
+    type: 'vector',
+  });
+  map.addLayer({
+    'id': '3d-buildings',
+    'source': 'openmaptiles',
+    'source-layer': 'building',
+    'type': 'fill-extrusion',
+    'minzoom': 15,
+    'filter': ['!=', ['get', 'hide_3d'], true],
+    'paint': {
+      'fill-extrusion-color': [
+        'interpolate',
+        ['linear'],
+        ['get', 'render_height'], 0, 'lightgray', 200, 'royalblue', 400, 'lightblue'
+      ],
+      'fill-extrusion-height': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        15, 0,
+        16, ['get', 'render_height']
+      ],
+      'fill-extrusion-base': ['case',
+        ['>=', ['get', 'zoom'], 16],
+        ['get', 'render_min_height'], 0
+      ]
+    }
+  }, labelLayerId);
+  map.addSource('heatmapSource', {
+    'type': 'geojson',
+    'data': sampleData
+  });
+
+  map.addLayer({
+    'id': 'heatmapLayer',
+    'type': 'heatmap',
+    'source': 'heatmapSource',
+    'paint': {
+      // Heatmap weight based on the PM2.5 value
+      'heatmap-weight': [
+        'interpolate',
+        ['linear'],
+        ['get', 'pm25'],
+        0, 0,
+        12, 0.2,
+        35, 0.4,
+        55, 0.6,
+        100, 0.8,
+        150, 1
+      ],
+      // Heatmap intensity by zoom level
+      'heatmap-intensity': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        0, 1,
+        9, 3
+      ],
+      // Heatmap color based on the PM2.5 value
+      'heatmap-color': [
+        'interpolate',
+        ['linear'],
+        ['heatmap-density'],
+        0, 'rgba(0, 255, 0, 0)',
+        0.2, 'rgb(255, 255, 0)',
+        0.4, 'rgb(255, 165, 0)',
+        0.6, 'rgb(255, 0, 0)',
+        0.8, 'rgb(128, 0, 128)',
+        1, 'rgb(0, 0, 0)'
+      ],
+      // Adjust the heatmap radius by zoom level
+      'heatmap-radius': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        0, 50,
+        9, 100
+      ],
+      // Transition from heatmap to circle layer by zoom level
+      'heatmap-opacity': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        7, 0.5,
+        9, 0.5
+      ]
+    }
+  });  
+
+  const toggleButton = document.querySelector('#toggle-button');
+  let heatmapVisible = false;
+
+  toggleButton.addEventListener('click', () => {
+      if (heatmapVisible) {
+        map.setLayoutProperty('heatmapLayer', 'visibility', 'none');
+        toggleButton.textContent = 'Show Heatmap';
+      } else {
+        map.setLayoutProperty('heatmapLayer', 'visibility', 'visible');
+        toggleButton.textContent = 'Hide Heatmap';
       }
-    }, labelLayerId);
-map.addSource('heatmapSource', {
-  'type': 'geojson',
-  'data': sampleData
-});
-
-map.addLayer({
-  'id': 'heatmapLayer',
-  'type': 'heatmap',
-  'source': 'heatmapSource',
-  'paint': {
-    // Heatmap weight based on the PM2.5 value
-    'heatmap-weight': [
-      'interpolate',
-      ['linear'],
-      ['get', 'pm25'],
-      0, 0,
-      12, 0.2,
-      35, 0.4,
-      55, 0.6,
-      100, 0.8,
-      150, 1
-    ],
-    // Heatmap intensity by zoom level
-    'heatmap-intensity': [
-      'interpolate',
-      ['linear'],
-      ['zoom'],
-      0, 1,
-      9, 3
-    ],
-    // Heatmap color based on the PM2.5 value
-    'heatmap-color': [
-      'interpolate',
-      ['linear'],
-      ['heatmap-density'],
-      0, 'rgba(0, 255, 0, 0)',
-      0.2, 'rgb(255, 255, 0)',
-      0.4, 'rgb(255, 165, 0)',
-      0.6, 'rgb(255, 0, 0)',
-      0.8, 'rgb(128, 0, 128)',
-      1, 'rgb(0, 0, 0)'
-    ],
-    // Adjust the heatmap radius by zoom level
-    'heatmap-radius': [
-      'interpolate',
-      ['linear'],
-      ['zoom'],
-      0, 50,
-      9, 100
-    ],
-    // Transition from heatmap to circle layer by zoom level
-    'heatmap-opacity': [
-      'interpolate',
-      ['linear'],
-      ['zoom'],
-      7, 0.5,
-      9, 0.5
-    ]
-  }
-});  
-
-const toggleButton = document.querySelector('#toggle-button');
-let heatmapVisible = false;
-
-toggleButton.addEventListener('click', () => {
-  if (heatmapVisible) {
-    map.setLayoutProperty('heatmapLayer', 'visibility', 'none');
-    toggleButton.textContent = 'Show Heatmap';
-  } else {
-    map.setLayoutProperty('heatmapLayer', 'visibility', 'visible');
-    toggleButton.textContent = 'Hide Heatmap';
-  }
-  heatmapVisible = !heatmapVisible;
-});
+      heatmapVisible = !heatmapVisible;
+    });
   });
 </script>
   </body>

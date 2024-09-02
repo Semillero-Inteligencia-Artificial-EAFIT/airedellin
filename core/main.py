@@ -14,7 +14,7 @@ from .tools.pred import linear_regresion,arima,random_forest,sarima,lasso
 from .tools.tools import *
 
 app = FastAPI(debug=True)
-app.mount('/static', StaticFiles(directory='static', html=True), name='static')
+app.mount('/static', StaticFiles(directory='core/static', html=True), name='static')
 
 token = readtxtline("data/token.txt")
 host = "influxdb.canair.io"

@@ -79,7 +79,7 @@
     const labels = Array.from({ length: numLabels }, (_, index) => index);
     //change labels by date
     const ctx = document.getElementById('dataChart').getContext('2d');
-   const dataChart = new Chart(ctx, {
+    const dataChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -134,7 +134,6 @@
             responsive: true,
         }
     });
-
     // Zoom control buttons
     document.getElementById('zoomIn').addEventListener('click', () => {
         dataChart.zoom(1.1);
@@ -147,6 +146,7 @@
     document.getElementById('resetZoom').addEventListener('click', () => {
         dataChart.resetZoom();
     });
+
 
     </script>
 

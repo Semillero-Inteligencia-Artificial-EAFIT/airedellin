@@ -63,113 +63,109 @@
                     </center>
                 </div>
 
-                <!--https://chatgpt.com/share/3a1fb253-55fb-4224-b562-82cf38fec62c-->
             </div>
             <script>
-                document.querySelectorAll('button[data-range]').forEach(button => {
-                    button.addEventListener('click', () => {
-                        const range = button.getAttribute('data-range');
-                        document.getElementById('selectedRange').value = range;
-
-                        // Submit the form
-                        document.getElementById('rangeForm').submit();
-                    });
-                });
-
-                const dataArray = {{ data }};  // Replace with your data source
-                const numLabels = dataArray.length;
-
-                //const colorPalette = ['#00e400', '#ffff00', '#ff7e00', '#ff0000', '#8f3f97', '#7e0023'];
-                const colorPalette = ['#77ff77', '#ffffcc', '#ffb380', '#ff8080', '#cc99cc', '#cc6677'];
-
-                function getColor(pm25) {
-                    if (pm25 > 150) {
-                        return colorPalette[5]; // Black
-                    } else if (pm25 > 100) {
-                        return colorPalette[4]; // Purple
-                    } else if (pm25 > 55) {
-                        return colorPalette[3]; // Red
-                    } else if (pm25 > 35) {
-                        return colorPalette[2]; // Orange
-                    } else if (pm25 > 12) {
-                        return colorPalette[1]; // Yellow
-                    } else {
-                        return colorPalette[0]; // Green
-                    }
+            function getColor(pm25) {
+                if (pm25 > 150) {
+                    return colorPalette[5]; // Black
+                } else if (pm25 > 100) {
+                    return colorPalette[4]; // Purple
+                } else if (pm25 > 55) {
+                    return colorPalette[3]; // Red
+                } else if (pm25 > 35) {
+                    return colorPalette[2]; // Orange
+                } else if (pm25 > 12) {
+                    return colorPalette[1]; // Yellow
+                } else {
+                    return colorPalette[0]; // Green
                 }
+            }
+            const dataArray = {{ data }};  // Replace with your data source
+            const numLabels = dataArray.length;
 
-                // Generate labels based on the length of the data
-                const labels = Array.from({ length: numLabels }, (_, index) => index);
-                //change labels by date
-                const ctx = document.getElementById('dataChart').getContext('2d');
-                const dataChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'PM2.5 μg/m³',
-                            data: {{ data }},
-                            borderColor: function(context) {
-                                const index = context.dataIndex;
-                                const value = context.dataset.data[index];
-                                return getColor(value);
-                            },
-                            backgroundColor: 'rgba(157, 169, 235, 0.01)',
-                            borderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6,
-                        }]
+            //const colorPalette = ['#00e400', '#ffff00', '#ff7e00', '#ff0000', '#8f3f97', '#7e0023'];
+            const colorPalette = ['#77ff77', '#ffffcc', '#ffb380', '#ff8080', '#cc99cc', '#cc6677'];
+            // Generate labels based on the length of the data
+            const labels = Array.from({ length: numLabels }, (_, index) => index);
+            //change labels by date
+            const ctx = document.getElementById('dataChart').getContext('2d');
+            const dataChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'PM2.5 μg/m³',
+                        data: {{ data }},
+                        borderColor: function(context) {
+                            const index = context.dataIndex;
+                            const value = context.dataset.data[index];
+                            return getColor(value);
+                        },
+                        backgroundColor: 'rgba(157, 169, 235, 0.01)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Measurements (30s)'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'PM2.5 μg/m³'
+                            }
+                        }
                     },
-                    options: {
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Measurements (30s)'
-                                }
+                    plugins: {
+                        zoom: {
+                            pan: {
+                                enabled: true,
+                                mode: 'xy',
                             },
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'PM2.5 μg/m³'
-                                }
-                            }
-                        },
-                        plugins: {
                             zoom: {
-                                pan: {
+                                wheel: {
                                     enabled: true,
-                                    mode: 'xy',
                                 },
-                                zoom: {
-                                    wheel: {
-                                        enabled: true,
-                                    },
-                                    pinch: {
-                                        enabled: true
-                                    },
-                                    mode: 'xy',
-                                }
+                                pinch: {
+                                    enabled: true
+                                },
+                                mode: 'xy',
                             }
-                        },
-                        responsive: true,
-                    }
-                });
+                        }
+                    },
+                    responsive: true,
+                }
+            });
+            document.querySelectorAll('button[data-range]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const range = button.getAttribute('data-range');
+                    document.getElementById('selectedRange').value = range;
 
-                // Zoom control buttons
-                document.getElementById('zoomIn').addEventListener('click', () => {
-                    dataChart.zoom(1.1);
+                    // Submit the form
+                    document.getElementById('rangeForm').submit();
                 });
+            });
 
-                document.getElementById('zoomOut').addEventListener('click', () => {
-                    dataChart.zoom(0.9);
-                });
+            // Zoom control buttons
+            document.getElementById('zoomIn').addEventListener('click', () => {
+                dataChart.zoom(1.1);
+            });
 
-                document.getElementById('resetZoom').addEventListener('click', () => {
-                    dataChart.resetZoom();
-                });
+            document.getElementById('zoomOut').addEventListener('click', () => {
+                dataChart.zoom(0.9);
+            });
+
+            document.getElementById('resetZoom').addEventListener('click', () => {
+                dataChart.resetZoom();
+            });
 
             </script>
 
