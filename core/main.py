@@ -8,6 +8,7 @@ import random
 
 import asyncio
 
+from .tools.dummy_donations import load_data,retrieve_data_for_sensor
 from .tools.dataTool import Sensors
 from .tools.pred import linear_regresion,arima,random_forest,sarima,lasso
 
@@ -17,6 +18,7 @@ app = FastAPI(debug=True)
 app.mount('/static', StaticFiles(directory='core/static', html=True), name='static')
 
 token = readtxtline("data/token.txt")
+dummy_donations=load_data("data/dummy_donations.json")
 host = "influxdb.canair.io"
 sensors = Sensors("canairio", host)
 templates = Jinja2Templates(directory="core/templates")
@@ -43,6 +45,7 @@ async def update_sensor_data():
 async def startup_event():
     # Start the background task to update sensor data every 30 minutes
     asyncio.create_task(update_sensor_data())
+    
 
 
 @app.get("/", response_class=HTMLResponse)
