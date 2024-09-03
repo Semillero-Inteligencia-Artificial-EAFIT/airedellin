@@ -91,10 +91,17 @@
                     const value = context.dataset.data[index];
                     return getColor(value);
                 },
-                backgroundColor: 'rgba(157, 169, 235, 0.01)',
+                backgroundColor: function(context) {
+                    const index = context.dataIndex;
+                    const value = context.dataset.data[index];
+                    return getColor(value);
+                },
                 borderWidth: 2,
                 pointRadius: 4,
                 pointHoverRadius: 6,
+                segment: {
+                    borderColor: 'rgba(200, 200, 200, 0.9)'
+                }
             }]
         },
         options: {

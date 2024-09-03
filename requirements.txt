@@ -5,3 +5,4 @@ influxdb==5.3.1
 python-multipart
 statsmodels
 scikit-learn
+xgboost

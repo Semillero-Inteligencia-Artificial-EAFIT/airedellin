@@ -11,14 +11,12 @@ def load_data(data_file):
 
 def retrieve_data_for_sensor(sensor_name,data):
     """Retrieve associated data based on the sensor name."""
-    #data = load_data("")
-    print(sensor_name)
     if sensor_name not in data['sensors']:
         print(f"Sensor {sensor_name} not found.")
         associated_data = {
             "sensor": "not found",
             "entity": "you can add your sensor for donatios",
-            "account": "go to ",
+            "account": "go to <a href='/add_donation'>add donation</a>",
             "image": data['images'][index] if index < len(data['images']) else None
         }
         return

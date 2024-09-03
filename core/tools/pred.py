@@ -9,6 +9,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from sklearn.linear_model import Lasso
 from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from xgboost import XGBRegressor
+#from fbprophet import Prophet
+
 
 import warnings
 
@@ -241,3 +245,89 @@ def lasso(y, num_pred=num_pred, alpha=1.0):
     
     # Return the predictions and the MSE
     return list(predicted_pm25.flatten()), float(mse)
+
+def xgboost(y, num_pred=num_pred):
+    """
+    Train an XGBoost regressor on time series data and predict future values.
+
+    Parameters:
+    y (array-like): The input time series data.
+    num_pred (int): The number of future time steps to predict. Default is 10.
+
+    Returns:
+    tuple: A tuple containing:
+        - list: Predicted future values of the time series.
+        - float: R-squared score of the model on the test set.
+
+    Raises:
+    ValueError: If the input array `y` is empty or if the dataset is too small to split.
+    """
+    y = np.array(y)
+    if y.size == 0:
+        return 0, "Error"
+
+    # Generate x values as a 2D array with one feature (i.e., time steps)
+    x = np.arange(len(y)).reshape(-1, 1)
+
+    # Reshape y to be a 1D array for the target variable
+    y = y.reshape(-1, 1)
+
+    # Check if the dataset is large enough for splitting
+    if len(y) <= 1:
+        return 0, "The dataset is too small to split."
+
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
+    # Initialize and train the XGBoost regressor
+    model = XGBRegressor(objective='reg:squarederror', n_estimators=100)
+    model.fit(X_train, y_train.ravel())
+
+    # Make predictions on the test set
+    y_pred = model.predict(X_test)
+
+    # Calculate the R-squared score
+    r2 = r2_score(y_test, y_pred)
+
+    # Predict future values
+    future_x = np.arange(len(y), len(y) + num_pred).reshape(-1, 1)
+    future_pred = model.predict(future_x)
+
+    return future_pred.tolist(), r2
+
+def exponential_smoothing(y, num_pred=num_pred):
+    """
+    Apply Exponential Smoothing to time series data and predict future values.
+
+    Parameters:
+    y (array-like): The input time series data.
+    num_pred (int): The number of future time steps to predict. Default is 10.
+
+    Returns:
+    tuple: A tuple containing:
+        - list: Predicted future values of the time series.
+        - float: R-squared score of the model on the training set.
+
+    Raises:
+    ValueError: If the input array `y` is empty or if the dataset is too small to model.
+    """
+    y = np.array(y)
+    if y.size == 0:
+        return 0, "Error"
+
+    # Check if the dataset is large enough for modeling
+    if len(y) <= 1:
+        return 0, "The dataset is too small to model."
+
+    # Fit the Exponential Smoothing model
+    model = ExponentialSmoothing(y, trend=None, seasonal=None, initialization_method="estimated")
+    fitted_model = model.fit()
+
+    # Calculate the R-squared score on the training data
+    y_pred = fitted_model.fittedvalues
+    r2 = r2_score(y, y_pred)
+
+    # Predict future values
+    future_pred = fitted_model.forecast(steps=num_pred)
+
+    return future_pred.tolist(), r2
