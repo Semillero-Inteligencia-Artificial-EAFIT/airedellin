@@ -50,27 +50,27 @@ async def index(request: Request):
     data = [
         {
             'type': 'Feature',
-            'properties': {'name': 'Jardins du Trocadéro(not working)', 'pm25': 16},
+            'properties': {'name': 'Jardins du Trocadéro <b>(not working🚧)</b>', 'pm25': 16},
             'geometry': {'type': 'Point', 'coordinates': [2.289207, 48.861561]},
         },
         {
             'type': 'Feature',
-            'properties': {'name': 'Jardin des Plantes(not working)', 'pm25': 39},
+            'properties': {'name': 'Jardin des Plantes <b>(not working🚧)</b>', 'pm25': 39},
             'geometry': {'type': 'Point', 'coordinates': [2.359823, 48.843995]},
         },
         {
             'type': 'Feature',
-            'properties': {'name': 'Jardins das Tulherias(not working)', 'pm25': 9999},
+            'properties': {'name': 'Jardins das Tulherias <b>(not working🚧)</b>', 'pm25': 9999},
             'geometry': {'type': 'Point', 'coordinates': [2.327092, 48.863608]},
         },
         {
             'type': 'Feature',
-            'properties': {'name': 'Parc de Bercy(not working)', 'pm25': 58},
+            'properties': {'name': 'Parc de Bercy <b>(not working🚧)</b>', 'pm25': 58},
             'geometry': {'type': 'Point', 'coordinates': [2.382094, 48.835962]},
         },
         {
             'type': 'Feature',
-            'properties': {'name': 'Jardin du Luxemburg(not working)', 'pm25': 6},
+            'properties': {'name': 'Jardin du Luxemburg <b>(not working🚧)</b>', 'pm25': 6},
             'geometry': {'type': 'Point', 'coordinates': [2.336975, 48.846421]},
         },
     ] + formatted_data

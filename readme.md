@@ -1,4 +1,4 @@
-# Airedellín 🌿
+# Airedellín 🌿 (In progres 🏗️🚧)
 
 <center>
 <div style="text-align: center;">
@@ -8,7 +8,7 @@
 
 Welcome to **Airedellin** , a PM2.5 visualizer designed to monitor and improve the air quality in Medellín! 🌆✨
 
-This project is currently under development 🚧, and we would love for you to join us! Our team, **MLEAFIT** (Machine Learning club from university EAFIT), is dedicated to applying ML techniques to tackle air quality challenges. We are preparing to participate in the **NASA Space Apps Challenge** with a mission to help from Medellín breathe cleaner air to the word.
+**This project is currently under development  🚧**, and we would love for you to join us! Our team, **MLEAFIT** (Machine Learning club from university EAFIT), is dedicated to applying ML techniques to tackle air quality challenges. We are preparing to participate in the **NASA Space Apps Challenge** with a mission to help from Medellín breathe cleaner air to the word.
 
 ![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/2.png)
 
@@ -82,3 +82,23 @@ Special thanks to **Hackerspace Unloquer** and **CanAirIO** for inspiring and mo
 ---
 
 Join us in making Medellín's air quality better for everyone! Together, we can make a difference. 🚀🌱
+
+### Important Notes
+
+ - paris data is not real is for cheaking everything is okey
+
+
+
+## TODO
+
+
+- [X] Heatmap
+- [X] Plot sensors in map
+- [X] Sensors with real pm2.5 values
+- [X] Predict with some algorithms the value of pm2.5
+- [X] Create dashboard for each sensor
+- [ ] Donations dummy system
+- [ ] Stadistical panel of pm2.5 
+- [ ] Real location of sensors
+- [ ] Waze for pm2.5
+- [ ] Web with layers for predict pm2.5 in a anothermap
