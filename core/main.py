@@ -85,11 +85,13 @@ async def index(request: Request):
 async def get_sensor(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)
     data = [int(value) for value in data if value is not None]
-
+    print(dummy_donations)
+    donations=retrieve_data_for_sensor(sensor_name,dummy_donations)
     return templates.TemplateResponse("sensors.html", {
         "request": request,
         "sensor_name": sensor_name,
         "data": data,
+        "donations": donations ,
     })
 
 @app.post("/sensor{sensor_name}")

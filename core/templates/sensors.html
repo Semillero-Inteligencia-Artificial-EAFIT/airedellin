@@ -28,12 +28,14 @@
             <p>Your donations help us keep this <b>sensor</b> running. Thank you for your support!</p>
             <div class="row">
                 <div class="col-md-8">
-                    <h5>{{ sensor_name }}Donation ID: 123456789</h5>
+                    <h5>{{ sensor_name }} Donation ID: {{ donations.account }} at {{ donations.entity }}</h5>
+                    <p>we are planing to use <a href="https://nostr.com/">nostr</a> because is a not trust needed alterative </p>
+                    <p> THIS IS A PROOF OF CONCEPT NOW (NOT IS REAL🏗️)</p>
                 </div>
                 <div class="col-md-4">
                     <div class="donation-frame text-center">
                         <h5>Scan to Donate</h5>
-                        <img src="https://via.placeholder.com/150" alt="QR Code">
+                        <img src="/static/{{ donations.image }}" alt="QR Code" height="150" width="150">
                     </div>
                 </div>
             </div>
