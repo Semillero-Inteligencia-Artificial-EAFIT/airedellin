@@ -122,7 +122,10 @@ async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form(
 @app.get("/sensor{sensor_name}/predictions", response_class=HTMLResponse)
 async def get_mlalgorithm(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)
-    data = [int(value) for value in data if value is not None]
+    data = [int(value) for value in data if (value is not None and 0<value<1024)]
+
+    
+    
 
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
@@ -138,16 +141,16 @@ async def post_mlalgorithm(
     sensor_name: str,
     algorithm: str = Form(...),
 ):  
-    data = sensors.data(sensor_name)
-    data = [int(value) for value in data if (value is not None and 0<value<1024)]
-
+    pm25,dates = sensors.data(sensor_name,date=True)
+    print(dates,pm25)
+    data = [int(value) for value in pm25 if value is not None]
     
     # Apply the selected algorithm
     if algorithm in algorithm_map:
+
         result = algorithm_map[algorithm](data)
     elif algorithm=="originalData":
         result = [[int(value) for value in data if value is not None],"0"]
-
     else:
         random_list = [random.randint(0, 55) for _ in range(200)]
         result = [random_list,"THE ALGORITHM SELECTED NOT EXIST"]  # If no valid algorithm is selected, return the original data

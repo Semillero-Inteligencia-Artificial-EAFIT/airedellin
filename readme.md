@@ -97,7 +97,7 @@ Join us in making Medellín's air quality better for everyone! Together, we can 
 - [X] Sensors with real pm2.5 values
 - [X] Predict with some algorithms the value of pm2.5
 - [X] Create dashboard for each sensor
-- [ ] Donations dummy system
+- [X] Donations dummy system
 - [ ] Stadistical panel of pm2.5 
 - [ ] Real location of sensors
 - [ ] Waze for pm2.5

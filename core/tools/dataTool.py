@@ -41,15 +41,24 @@ class Sensors:
         names = [item['name'] for item in result.get_points()]
         return names
         """
-    def data(self, name,time="24h"):
+    def data(self, name,time="24h",date=False):
         query = (
             "SELECT mean(\"pm25\") AS \"data\" FROM \"fixed_stations_01\" "
             f"WHERE \"name\" = '{name}' AND time >= now() - {time} "
             "GROUP BY time(30s) fill(null) ORDER BY time ASC"
         )
-
-        result = self.client.query(query)
-        return [value["data"] for value in result.get_points()]
+        if date:
+            result = self.client.query(query)
+            pm25=[]
+            date=[]
+            for value in result.get_points():
+                date.append(value["time"])
+                pm25.append(value["data"])
+            return pm25,date
+        else:
+            result = self.client.query(query)
+            #print(list(result.get_points()))
+            return [value["data"] for value in result.get_points()]
 
     def coordinates(self, name):
         query = (

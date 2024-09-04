@@ -11,7 +11,6 @@ from sklearn.linear_model import Lasso
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from xgboost import XGBRegressor
-#from fbprophet import Prophet
 
 
 import warnings
