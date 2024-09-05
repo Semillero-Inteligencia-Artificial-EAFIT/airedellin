@@ -17,7 +17,7 @@ def retrieve_data_for_sensor(sensor_name,data):
             "sensor": "not found",
             "entity": "you can add your sensor for donatios",
             "account": "go to <a href='/add_donation'>add donation</a>",
-            "image": data['images'][index] if index < len(data['images']) else None
+            "image": "https://via.placeholder.com/150",
         }
         return
     

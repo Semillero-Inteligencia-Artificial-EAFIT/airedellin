@@ -35,7 +35,11 @@
                 <div class="col-md-4">
                     <div class="donation-frame text-center">
                         <h5>Scan to Donate</h5>
-                        <img src="/static/{{ donations.image }}" alt="QR Code" height="150" width="150">
+                        {% if donations.image == "https://via.placeholder.com/150" %}
+                            <img src="https://via.placeholder.com/150" alt="QR Code" height="150" width="150">
+                        {% else %}
+                            <img src="/static/{{ donations.image }}" alt="QR Code" height="150" width="150">
+                        {% endif %}
                     </div>
                 </div>
             </div>
