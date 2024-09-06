@@ -87,7 +87,6 @@ async def index(request: Request):
 async def get_sensor(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)
     data = [int(value) for value in data if value is not None]
-    print(dummy_donations)
     donations=retrieve_data_for_sensor(sensor_name,dummy_donations)
     return templates.TemplateResponse("sensors.html", {
         "request": request,
@@ -95,6 +94,18 @@ async def get_sensor(request: Request, sensor_name: str):
         "data": data,
         "donations": donations ,
     })
+
+@app.get("/stadistics{sensor_name}", response_class=HTMLResponse)
+async def stadistics(request: Request, sensor_name: str):
+    data = sensors.data(sensor_name)
+    #add variance, sum, max ,min, kurtosis,count, mean, std, min, max, and quartiles 
+    data = [int(value) for value in data if value is not None]
+    return templates.TemplateResponse("stadistics.html", {
+        "request": request,
+        "sensor_name": sensor_name,
+        "data": data,
+    })
+
 
 @app.post("/sensor{sensor_name}")
 async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form("24h")):
