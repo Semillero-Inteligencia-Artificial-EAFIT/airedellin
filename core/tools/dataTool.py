@@ -59,6 +59,34 @@ class Sensors:
             result = self.client.query(query)
             #print(list(result.get_points()))
             return [value["data"] for value in result.get_points()]
+    def data_complate_particules(self, name,time="24h",date=False):
+        """
+        To test
+        """
+        query = (
+            "SELECT mean(\"pm25\") AS \"mean_pm25\", "
+            "mean(\"pm10\") AS \"mean_pm10\", "
+            "mean(\"pm1\") AS \"mean_pm1\" "
+            "FROM \"fixed_stations_01\" "
+            f"WHERE \"name\" = '{name}' AND time >= now() - {time} "
+            "GROUP BY time(30s) fill(null) "
+            "ORDER BY time ASC"
+        )
+
+        if date:
+            result = self.client.query(query)
+            pm25=[]
+            pm10=[]
+            pm1=[]
+            date=[]
+            for value in result.get_points():
+                date.append(value["time"])
+                pm25.append(value["data"])
+            return pm25,date
+        else:
+            result = self.client.query(query)
+            #print(list(result.get_points()))
+            return [value["data"] for value in result.get_points()]
 
     def coordinates(self, name):
         query = (

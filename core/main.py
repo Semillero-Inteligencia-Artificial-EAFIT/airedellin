@@ -95,12 +95,12 @@ async def get_sensor(request: Request, sensor_name: str):
         "donations": donations ,
     })
 
-@app.get("/stadistics{sensor_name}", response_class=HTMLResponse)
-async def stadistics(request: Request, sensor_name: str):
+@app.get("/sensor{sensor_name}/statistics", response_class=HTMLResponse)
+async def statistics(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)
     #add variance, sum, max ,min, kurtosis,count, mean, std, min, max, and quartiles 
-    data = [int(value) for value in data if value is not None]
-    return templates.TemplateResponse("stadistics.html", {
+    #data = [int(value) for value in data if value is not None]
+    return templates.TemplateResponse("statistics.html", {
         "request": request,
         "sensor_name": sensor_name,
         "data": data,
