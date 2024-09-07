@@ -40,3 +40,63 @@ def divide_data(result_set):
         pm25_values.append(item['data'] if item['data'] is not None else float('nan'))
     
     return dates, pm25_values
+
+def statistics(data):
+    if not data:
+        return None
+    total_sum=0
+    max_value=0
+    min_value=999999999999999999999999
+    n = len(data)
+    none_count=0
+    for i in range(len(data)):
+        total_sum+=data[i]
+        if data[i]<min_value:
+            min_value=data[i]
+        if data[i]>max_value:
+            max_value=data[i]
+        if data[i]==None:
+            none_count+=1
+
+    mean = total_sum / n
+
+    variance_sum=0
+    # Initialize variables for higher moments
+    m2, m3, m4 = 0, 0, 0  # second, third, and fourth moments
+    for i in range(len(data)): 
+        diff = data[i] - mean
+        diff2 = diff ** 2
+        diff3 = diff ** 3
+        diff4 = diff ** 4
+        m2 += diff2
+        m3 += diff3
+        m4 += diff4
+    
+    # Variance, standard deviation, skewness, and kurtosis
+    variance = m2 / n
+    std_dev = variance ** 0.5
+    skewness = (m3 / n) / (std_dev ** 3)
+    kurtosis = (m4 / n) / (variance ** 2) - 3
+
+    
+    # Mode
+    mode = max(set(data), key=data.count)
+    
+    cv = std_dev / mean
+    z_scores = [(x - mean) / std_dev for x in data]
+
+    
+    return {
+        "sum": total_sum,
+        "mean": mean,
+        "variance": variance,
+        "standard_deviation": std_dev,
+        "max": max_value,
+        "min": min_value,
+        "mode": mode,
+        "kurtosis": kurtosis,
+        "skewness": skewness,
+        "CV": cv,
+        "z_scores": z_scores,
+        "count_none": none_count
+    }
