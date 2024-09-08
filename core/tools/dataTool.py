@@ -74,7 +74,6 @@ class Sensors:
         )
         if date:
             result = self.client.query(query)
-            print("data",list(result))
             pm25=[]
             pm10=[]
             pm1=[]
@@ -90,7 +89,6 @@ class Sensors:
             return {"date":date,"pm25":pm25,"pm10":pm10,"pm1":pm1}
         else:
             result = self.client.query(query)
-            print("data",list(result))
             pm25=[]
             pm10=[]
             pm1=[]

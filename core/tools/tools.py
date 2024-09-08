@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-"
 #airellin - by jero98772
 import datetime
-
+import numpy as np
 def writetxt(name,content,mode="w"):
   """
   writetxt(name,content) , write in txt file something  
@@ -47,13 +47,19 @@ def statistics_extractor(data):
         return None
     total_sum=0
     max_value=0
-    min_value=999999999999999999999999
+    min_value=9999999999999999999999999999
     n = len(data)
     none_count=0
+    ocurrences={}
     for i in range(len(data)):
         if data[i]==None:
             none_count+=1
         else:
+
+            if data[i] in ocurrences:
+                ocurrences[int(data[i])]+=1
+            else:
+                ocurrences[int(data[i])]=1
             total_sum+=data[i]
             if data[i]<min_value:
                 min_value=data[i]
@@ -66,14 +72,14 @@ def statistics_extractor(data):
     variance_sum=0
     # Initialize variables for higher moments
     m2, m3, m4 = 0, 0, 0  # second, third, and fourth moments
+    std_deviations=[]
     for i in range(len(data)): 
         diff = data[i] - mean
-        diff2 = diff ** 2
-        diff3 = diff ** 3
-        diff4 = diff ** 4
-        m2 += diff2
-        m3 += diff3
-        m4 += diff4
+        m2 += diff ** 2
+        m3 += diff ** 3
+        m4 += diff ** 4
+        #z_scores.append(diff/std_dev)
+        std_deviations.append(diff)
     
     # Variance, standard deviation, skewness, and kurtosis
     variance = m2 / n
@@ -84,10 +90,9 @@ def statistics_extractor(data):
     
     # Mode
     mode = max(set(data), key=data.count)
-    
     cv = std_dev / mean
     z_scores = [(x - mean) / std_dev for x in data]
-    
+
     return {
         "sum": total_sum,
         "mean":round(mean,4),
@@ -99,6 +104,8 @@ def statistics_extractor(data):
         "kurtosis": round(kurtosis,4),
         "skewness": round(skewness,4),
         "CV": round(cv,4),
+        "count_none": none_count,
         "z_scores": z_scores,
-        "count_none": none_count
+        "ocurrences": ocurrences,
+
     }
