@@ -6,3 +6,4 @@ python-multipart
 statsmodels
 scikit-learn
 xgboost
+tensorflow
