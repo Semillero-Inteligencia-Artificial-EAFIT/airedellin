@@ -90,15 +90,15 @@ def statistics_extractor(data):
     
     return {
         "sum": total_sum,
-        "mean": mean,
-        "variance": variance,
-        "standard_deviation": std_dev,
+        "mean":round(mean,4),
+        "variance": round(variance,4),
+        "standard_deviation": round(std_dev,4),
         "max": max_value,
         "min": min_value,
         "mode": mode,
-        "kurtosis": kurtosis,
-        "skewness": skewness,
-        "CV": cv,
+        "kurtosis": round(kurtosis,4),
+        "skewness": round(skewness,4),
+        "CV": round(cv,4),
         "z_scores": z_scores,
         "count_none": none_count
     }

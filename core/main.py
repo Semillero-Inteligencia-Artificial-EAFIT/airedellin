@@ -97,14 +97,16 @@ async def get_sensor(request: Request, sensor_name: str):
 
 @app.get("/sensor{sensor_name}/statistics", response_class=HTMLResponse)
 async def statistics(request: Request, sensor_name: str):
-    data = sensors.data(sensor_name)
-    print(data)
-    stad = statistics_extractor(data)
+    #data = sensors.data(sensor_name)
+    data=sensors.data_complate_particules(sensor_name)
+    pm25=data["pm25"]
+    #print(data)
+    stad = statistics_extractor(pm25)
     #data = [int(value) for value in data if value is not None]
     return templates.TemplateResponse("statistics.html", {
         "request": request,
         "sensor_name": sensor_name,
-        "data": data,
+        "data": pm25,
         "statistics":stad,
     })
 

@@ -72,21 +72,37 @@ class Sensors:
             "GROUP BY time(30s) fill(null) "
             "ORDER BY time ASC"
         )
-
         if date:
             result = self.client.query(query)
+            print("data",list(result))
             pm25=[]
             pm10=[]
             pm1=[]
             date=[]
             for value in result.get_points():
-                date.append(value["time"])
-                pm25.append(value["data"])
-            return pm25,date
+                if value["mean_pm25"]!=None:
+                    pm25.append(value["mean_pm25"])
+                if value["mean_pm10"]!=None:
+                    pm10.append(value["mean_pm10"])
+                if value["mean_pm1"]!=None:
+                    pm1.append(value["mean_pm1"])  
+
+            return {"date":date,"pm25":pm25,"pm10":pm10,"pm1":pm1}
         else:
             result = self.client.query(query)
-            #print(list(result.get_points()))
-            return [value["data"] for value in result.get_points()]
+            print("data",list(result))
+            pm25=[]
+            pm10=[]
+            pm1=[]
+            date=[]
+            for value in result.get_points():
+                if value["mean_pm25"]!=None:
+                    pm25.append(value["mean_pm25"])
+                if value["mean_pm10"]!=None:
+                    pm10.append(value["mean_pm10"])
+                if value["mean_pm1"]!=None:
+                    pm1.append(value["mean_pm1"])            
+            return {"pm25":pm25,"pm10":pm10,"pm1":pm1}
 
     def coordinates(self, name):
         query = (
