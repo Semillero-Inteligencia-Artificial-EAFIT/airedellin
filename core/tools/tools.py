@@ -41,7 +41,8 @@ def divide_data(result_set):
     
     return dates, pm25_values
 
-def statistics(data):
+def statistics_extractor(data):
+    new_data=[]
     if not data:
         return None
     total_sum=0
@@ -50,16 +51,18 @@ def statistics(data):
     n = len(data)
     none_count=0
     for i in range(len(data)):
-        total_sum+=data[i]
-        if data[i]<min_value:
-            min_value=data[i]
-        if data[i]>max_value:
-            max_value=data[i]
         if data[i]==None:
             none_count+=1
-
+        else:
+            total_sum+=data[i]
+            if data[i]<min_value:
+                min_value=data[i]
+            if data[i]>max_value:
+                max_value=data[i]
+            new_data.append(data[i])
     mean = total_sum / n
 
+    data=new_data
     variance_sum=0
     # Initialize variables for higher moments
     m2, m3, m4 = 0, 0, 0  # second, third, and fourth moments
@@ -84,7 +87,6 @@ def statistics(data):
     
     cv = std_dev / mean
     z_scores = [(x - mean) / std_dev for x in data]
-
     
     return {
         "sum": total_sum,

@@ -98,12 +98,14 @@ async def get_sensor(request: Request, sensor_name: str):
 @app.get("/sensor{sensor_name}/statistics", response_class=HTMLResponse)
 async def statistics(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)
-    #add variance, sum, max ,min, kurtosis,count, mean, std, min, max, and quartiles 
+    print(data)
+    stad = statistics_extractor(data)
     #data = [int(value) for value in data if value is not None]
     return templates.TemplateResponse("statistics.html", {
         "request": request,
         "sensor_name": sensor_name,
         "data": data,
+        "statistics":stad,
     })
 
 
@@ -134,10 +136,6 @@ async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form(
 async def get_mlalgorithm(request: Request, sensor_name: str):
     data = sensors.data(sensor_name)
     data = [int(value) for value in data if (value is not None and 0<value<1024)]
-
-    
-    
-
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
         "algorithm_names": algorithm_names,
