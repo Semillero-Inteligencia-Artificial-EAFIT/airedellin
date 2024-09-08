@@ -11,7 +11,11 @@ from sklearn.linear_model import Lasso
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 from xgboost import XGBRegressor
-
+import tensorflow as tf
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense
 
 import warnings
 
@@ -330,3 +334,117 @@ def exponential_smoothing(y, num_pred=num_pred):
     future_pred = fitted_model.forecast(steps=num_pred)
 
     return future_pred.tolist(), r2
+
+
+
+
+def LSTM(y, num_pred=num_pred):
+    """
+    Train a RNN with LSTM to time series data and predict future values.
+
+    Parameters:
+    y (array-like): The input time series data.
+    num_pred (int): The number of future time steps to predict. Default is 10.
+
+    Returns:
+    tuple: A tuple containing:
+        - list: Predicted future values of the time series.
+        - float: R-squared score of the model on the training set.
+
+    Raises:
+    ValueError: If the input array `y` is empty or if the dataset is too small to model.
+    """
+
+
+
+    y = np.array(y)
+    if y.size == 0:
+        return 0, "Error"
+
+ 
+    # Convert the input data into a NumPy array and reshape it to have one column
+    data = y.reshape(-1, 1)
+
+    # Normalize the data to the range [0, 1] using MinMaxScaler
+    scaler = MinMaxScaler()
+    scaled_data = scaler.fit_transform(data)
+
+    # Define a function to create sequences of time series data
+    def create_sequences(data, window_size):
+        # Use the TimeseriesGenerator to generate sequences for training
+        generator = TimeseriesGenerator(data, data, length=window_size, batch_size=30)
+        return generator
+
+    # Set the window size (number of previous time steps to use for predictions)
+    window_size = int(len(y)*0.10)
+
+    # Create the training data generator
+    train_generator = create_sequences(scaled_data, window_size)
+
+    # Build the Sequential model with two Bidirectional LSTM layers and one Dense output layer
+    model = Sequential([
+
+        # First Bidirectional LSTM layer with 52 units and dropout for regularization
+        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(52, return_sequences=True, dropout=0.2)),
+
+        # Second Bidirectional LSTM layer with 52 units and dropout for regularization
+        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(52, dropout=0.2)),
+
+        # Dense output layer to predict one value
+        Dense(1)
+    ])
+
+    # Compile the model using the Adam optimizer and mean squared error loss function
+    model.compile(optimizer='adam', loss='mean_squared_error')
+
+    # Train the model using the training data generator for 6 epochs
+    history = model.fit(train_generator, epochs=6)
+
+    # Define a function to make predictions for a specified number of future time steps (n_pred)
+    def predict_quality(model, data, window_size, n_pred):
+        predictions = []  # List to store predictions
+        arr = data  # Copy of the input data
+        
+        # Loop to generate predictions for n_pred time steps
+        for i in range(n_pred):
+            # Generate a sequence of the last (window_size + 1) time steps
+            generator = TimeseriesGenerator(arr[-(window_size+1):], arr[-(window_size+1):], length=window_size, batch_size=1)
+            
+            # Get the input data (x) from the generator
+            x, _ = generator[0]
+            
+            # Predict the next value using the model
+            value = model.predict(x, verbose=0)
+            
+            # Append the predicted value to the predictions list
+            predictions.append(value[0, 0])
+            
+            # Update the input data by appending the predicted value
+            arr = np.append(arr, np.array(value[0, 0]))[np.newaxis][:].reshape(-1, 1)
+
+        
+        # Reshape the predictions and inverse transform them to the original scale
+        predictions = np.array(predictions).reshape(-1, 1)
+        return scaler.inverse_transform(predictions)
+
+    # Make predictions for the specified number of future time steps (num_pred)
+    predictions = predict_quality(model, scaled_data, window_size, num_pred)
+
+    # Convert the predictions to a 1D array
+    predictions = np.array(predictions).squeeze()
+
+    # Define the split percentage for training and validation data (80% training, 20% validation)
+    split_percent = 0.8
+    split = int(split_percent * len(scaled_data))
+
+    # Inverse transform the scaled validation data to the original scale
+    validation_data = scaler.inverse_transform(scaled_data[split:])
+
+    # Use the model to predict future values for the validation set
+    predicted_validation = predict_quality(model, scaled_data[:split], window_size, len(validation_data))
+
+    # Calculate the mean squared error between the real validation data and the predictions
+    mse = mean_squared_error(validation_data, predicted_validation)
+
+
+    return predictions.tolist(),mse
