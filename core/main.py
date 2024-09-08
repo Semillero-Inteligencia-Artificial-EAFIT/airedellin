@@ -100,6 +100,9 @@ async def statistics(request: Request, sensor_name: str):
     #data = sensors.data(sensor_name)
     data=sensors.data_complate_particules(sensor_name)
     pm25=data["pm25"]
+    pm10=data["pm10"]
+    pm1=data["pm1"]
+
     #print(data)
     stad = statistics_extractor(pm25)
     #data = [int(value) for value in data if value is not None]
@@ -107,7 +110,9 @@ async def statistics(request: Request, sensor_name: str):
         "request": request,
         "sensor_name": sensor_name,
         "data": pm25,
+        "pm10":pm10,
         "statistics":stad,
+        "pm1":pm1,
     })
 
 
