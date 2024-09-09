@@ -9,3 +9,21 @@ repositorio como iniciativa para incentivar la ciencia ciudadana en medellin par
 en medellin las causas del aumento de pm2.5 son incendios forestales, vehiculos, fabricas y mas importante de los vientos del sahara
 
 ...
+
+
+nuestra plataforma trata de ser lo mas regionalista posible usando proyectos colombianos como fast api y herramientas como fastapi, nos inspiramos en el visualizador de datos
+
+fastapi es una herramienta eficiente,permite async, un modo de inicializacion que nesesitamos para obtener al inicio para crear un hilo que se ejecute cada 30 minutos para obtener los datos de los sensores
+
+
+
+# To write
+
+paginas que tiene
+algoritmos de machine learning actuales
+datos de calibracion (los que estan en paris)
+donaciones
+las estadisticas
+
+
+llenar index web con toda esta informacion
