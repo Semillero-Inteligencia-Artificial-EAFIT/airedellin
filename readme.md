@@ -4,6 +4,11 @@
 <div style="text-align: center;">
 <img src="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/logo.png" alt="Description" style="width: 50%; height: 50%;">  
 </div>
+**Translations in**
+[Español](https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/readme_es.md)
+[Deutsch](https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/readme_de.md) 
+[Русский](https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/readme_ru.md)
+
 </center>
 
 **Airedellín** is a repository initiated to promote citizen science in Medellín, aiming to address the issue of air quality and PM2.5. The platform builds upon projects from citizen groups like Canairio and Unloquer, with a focus on visualizing and analyzing air quality data to improve public health.
@@ -128,8 +133,7 @@ Join us in improving Medellín’s air quality for everyone. 🚀🌱
 ### Important Notes
 
 - **Paris Data**: The data used for Paris sensors is not real; it's for testing purposes.
-
-
+- **Techincal Notes**: [Here](https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/technical_documentation_en.md)
 ### We want to
 
 - [X] Heatmap
@@ -139,6 +143,7 @@ Join us in improving Medellín’s air quality for everyone. 🚀🌱
 - [X] Create dashboard for each sensor
 - [X] Donations dummy system
 - [X] Stadistical panel of pm2.5
+- [ ] Hexgon map like in [https://sensor.community/es/](https://sensor.community/es/)
 - [ ] change the time when the sensor take data for better predictions , predict not from 30 sec to 30 sec. for 1 day to another day 
 - [ ] Real location of sensors
 - [ ] Waze for pm2.5
