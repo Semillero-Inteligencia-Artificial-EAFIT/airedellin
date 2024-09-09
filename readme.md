@@ -89,8 +89,7 @@ Join us in making Medellín's air quality better for everyone! Together, we can 
 
 
 
-## TODO
-
+## I want to
 
 - [X] Heatmap
 - [X] Plot sensors in map
@@ -98,7 +97,8 @@ Join us in making Medellín's air quality better for everyone! Together, we can 
 - [X] Predict with some algorithms the value of pm2.5
 - [X] Create dashboard for each sensor
 - [X] Donations dummy system
-- [ ] Stadistical panel of pm2.5 
+- [X] Stadistical panel of pm2.5
+- [ ] change the time when the sensor take data for better predictions , predict not from 30 sec to 30 sec. for 1 day to another day 
 - [ ] Real location of sensors
 - [ ] Waze for pm2.5
 - [ ] Web with layers for predict pm2.5 in a anothermap

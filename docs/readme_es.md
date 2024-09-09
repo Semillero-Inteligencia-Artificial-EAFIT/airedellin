@@ -1,143 +1,93 @@
-# Airedellín 🌿 (en progresso 🏗️🚧)
+Aquí tienes el texto con la ortografía corregida:
 
-repositorio como iniciativa para incentivar la ciencia ciudadana en medellin para aboradar el problema de calidad de aire y pm2.5 en la ciudad de medellin , en base a otros trabajos de grupos ciudadanos como canairio y unloquer, en colombia en medellin sucede un fenomeno en septiembre y entre abril-mayo que se eleva la concentracion de pm2.5, el pm2.5 es una particula fina de 2.5 micrometros de radio , estas vienen de combustibles no limpios 
+---
 
- la cocina (cuando se quema la arepa) o la calefacción, la quema de basuras y residuos agrícolas, las actividades industriales, el transporte y el polvo arrastrado por el viento, entre otras fuentes. Las partículas PM2,5 penetran profundamente en los pulmones y el torrente sanguíneo, lo que aumenta el riesgo de morir por enfermedades cardiacas y pulmonares, derrames cerebrales y cáncer. Estas partículas pueden ser emitidas directamente o formarse en la atmósfera a partir de distintos contaminantes emitidos, como el amoníaco y los compuestos orgánicos volátiles.
+# Airedellín 🌿 (en progreso 🏗️🚧)
 
- La materia particulada incluye sustancias químicas orgánicas (como polem), polvo, hollín y metales
+Repositorio como iniciativa para incentivar la ciencia ciudadana en Medellín para abordar el problema de calidad de aire y PM2.5 en la ciudad de Medellín. Se basa en otros trabajos de grupos ciudadanos como Canairio y Unloquer. En Colombia, en Medellín sucede un fenómeno en septiembre y entre abril-mayo, donde se eleva la concentración de PM2.5. El PM2.5 es una partícula fina de 2.5 micrómetros de radio, estas provienen de combustibles no limpios, como la cocina (cuando se quema la arepa) o la calefacción, la quema de basuras y residuos agrícolas, las actividades industriales, el transporte y el polvo arrastrado por el viento, entre otras fuentes. Las partículas PM2.5 penetran profundamente en los pulmones y el torrente sanguíneo, lo que aumenta el riesgo de enfermedades cardíacas, pulmonares, derrames cerebrales y cáncer. Estas partículas pueden ser emitidas directamente o formarse en la atmósfera a partir de contaminantes emitidos, como el amoníaco y los compuestos orgánicos volátiles.
 
-en medellin las causas del aumento de pm2.5 son incendios forestales, vehiculos, fabricas y mas importante de los vientos del sahara
+La materia particulada incluye sustancias químicas orgánicas (como polen), polvo, hollín y metales.
 
+En Medellín, las causas del aumento de PM2.5 son incendios forestales, vehículos, fábricas y, más importante, los vientos del Sahara.
 
+Nuestra plataforma trata de ser lo más regionalista posible, utilizando proyectos colombianos como FastAPI y herramientas similares. Nos inspiramos en el visualizador de datos.
 
+FastAPI es una herramienta eficiente, permite asincronía, un modo de inicialización que necesitamos para crear un hilo que se ejecute cada 30 minutos para obtener los datos de los sensores.
 
-nuestra plataforma trata de ser lo mas regionalista posible usando proyectos colombianos como fast api y herramientas como fastapi, nos inspiramos en el visualizador de datos
+Cuenta con un mapa hecho con MapLibre y DeckGL, la librería que utiliza Uber (el de los carros, no Uber de Unloquer).
 
-fastapi es una herramienta eficiente,permite async, un modo de inicializacion que nesesitamos para obtener al inicio para crear un hilo que se ejecute cada 30 minutos para obtener los datos de los sensores
+En el mapa hay unos sensores en París que son para calibrar colores y verificar que todo funcione.
 
+Usamos MapLibre con DeckGL porque Pydeck (la versión de DeckGL para Python) no permite hacer pop-ups clicables, sino pop-ups imposibles de oprimir 
 
-cuenta con un mapa hecho con maplibre y deckgl la libreria que usa uber(el de los carros, no uber de unloquer)
+video: ![](https://private-user-images.githubusercontent.com/11672957/364573233-db9f9d25-aaa7-47b8-a8d7-e9ed990a5759.mp4?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjU4NDg4MTcsIm5iZiI6MTcyNTg0ODUxNywicGF0aCI6Ii8xMTY3Mjk1Ny8zNjQ1NzMyMzMtZGI5ZjlkMjUtYWFhNy00N2I4LWE4ZDctZTllZDk5MGE1NzU5Lm1wND9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA5MDklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwOTA5VDAyMjE1N1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTBjYTY2Nzk3YjY0M2ZiNDZlNTBhYjczYzFiYmM3NDVhOGY4ZjIwNDRiNWEwZWQzZWRjM2YyMWEzZjE1MzE5NTMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.1Gwypn8rVxo8dKgpwevuisWAznlhV6po2Pos-O9oO3s) 
 
-en el mapa hay unos sensores en paris que son para calibrar colores y verificar que todo funcione
+y porque nos permite crear animaciones, elementos en 3D y más.
 
-usamos maplibre con deckgl por que pydeck (la version de deck gl de python) no permite hacer pop ups cliquiables, permite hacer pop ups imposibles de oprimir (video:https://private-user-images.githubusercontent.com/11672957/364573233-db9f9d25-aaa7-47b8-a8d7-e9ed990a5759.mp4?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjU4NDg4MTcsIm5iZiI6MTcyNTg0ODUxNywicGF0aCI6Ii8xMTY3Mjk1Ny8zNjQ1NzMyMzMtZGI5ZjlkMjUtYWFhNy00N2I4LWE4ZDctZTllZDk5MGE1NzU5Lm1wND9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA5MDklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwOTA5VDAyMjE1N1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTBjYTY2Nzk3YjY0M2ZiNDZlNTBhYjczYzFiYmM3NDVhOGY4ZjIwNDRiNWEwZWQzZWRjM2YyMWEzZjE1MzE5NTMmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.1Gwypn8rVxo8dKgpwevuisWAznlhV6po2Pos-O9oO3s) y por que nos permite crear animaciones , cositas en 3d y mas
+Necesitamos poder hacer clic en los puntos que son sensores de calidad de aire de Canairio para obtener información de ellos. El pop-up contiene dos hipervínculos, uno al gráfico de Canairio y otro a nuestra página con una sección aparte para el sensor clicado. En esta sección podemos ver un historial del tiempo solo de PM2.5 y unos botones para mejorar la visualización: zoom in, zoom out, y seleccionar datos de fechas más antiguas.
 
-nesesitamos poder cliquear en los puntos que son sensores de calidad de aire canairio para obtener informacion de ellos, el popup contiene 2 hyperviculos uno al grafa de canairio y otro a nuestra pagina con una seccion aparta para el sensor que se cliquehe, en esta seccion podemos ver un historial del tiempo solo de pm2.5 y unos botones para mejorar la visualizacion ,zoom in y zoom out, y selecionar datos de fechas mas antiguas
+Podemos desactivar el heatmap o activarlo con un botón.
 
-podemos desactivar el heatmap o activarlo con un boton
+También tiene un relieve 3D atractivo.
 
-tambien tiene un facy relieve 3d que hace la pagina mas atractiva
+Hay 3 secciones especiales para los sensores en la página del sensor:
+- Donaciones
+- Estadísticas
+- Machine learning y predicciones
 
-hay 3 secciones especiales para los sensores en la pagina del sensor
+Las donaciones se pensaron como un incentivo, propuesto por el hackerspace de Unloquer. Se creó un mecanismo universal basado en la confianza que permite que un usuario añada a un sensor datos para donar más un QR. El problema es la confianza, por lo que queremos usar Nostr para no tener la responsabilidad de los sensores.
 
-donaciones,
-estadisticas,
-y machine learnig y predicciones
+Cuenta con algoritmos de machine learning, ya que en el semillero de machine learning hicimos un ejercicio para implementar algoritmos para series de tiempo. Muchos de estos algoritmos se pueden mejorar y no son lo mejor para este tipo de tareas.
 
+Usamos estos algoritmos y modelos:
 
-las donaciones se pensaron como un incetivo y por que las propusieron del hackerspace de unloquer, se dejo hecho un mecanismo universal basado en la confiasa que perimte que un usuario añada a un sensor datos para donarle mas un QR, el problema de esto es la confianza, por eso queremos usar nostr para no tener la responsabilidad de los sensores 
+- **OriginalData**: Se refiere a los datos crudos o sin procesar que se utilizan para entrenar los modelos y hacer predicciones.
+- **Linear Regression**: Modelo estadístico simple que predice la relación entre una variable dependiente y una o más variables independientes.
+- **ARIMA**: Modelo de promedio móvil e integración autorregresiva, útil para datos de series temporales.
+- **Random Forest**: Algoritmo de aprendizaje automático basado en múltiples árboles de decisión, adecuado para problemas complejos.
+- **SARIMA**: Extensión del modelo ARIMA que incluye estacionalidad.
+- **Lasso**: Modelo de regresión lineal con regularización para evitar el sobreajuste.
+- **XGBoost**: Algoritmo de árboles de decisión con boosting, eficiente para predicciones complejas.
+- **Exponential Smoothing**: Método de suavizado exponencial para predicciones de series temporales.
+- **LSTM**: Red neuronal recurrente que maneja secuencias de datos y es ideal para series temporales.
 
-cuenta con algoritmos de machine learning por que en el semillero de machine learning hicimos un ejercio para implementar algoritmos para series de tiempo, muchos de estos algoritmos se pueden mejorar y no son lo mejor para este tipo de tareas
+Tratamos de usar Prophet de Facebook, pero sigue siendo Facebook, no funciona y está desactualizado.
 
-usamos estos algorimos y modelos
+**Estadísticas**
 
-OriginalData: Se refiere a los datos crudos o sin procesar que se utilizan para entrenar los modelos y hacer predicciones. No es un algoritmo, pero es la base para aplicar los modelos.
+Creamos una página para observar las estadísticas de cada sensor:
+- Suma
+- Media
+- Varianza
+- Desviación estándar
+- Máximo
+- Mínimo
+- Moda
+- Curtosis
+- Asimetría
+- Coeficiente de variación (CV)
+- Conteo de valores nulos
 
-Linear Regression: Es un modelo estadístico simple que trata de predecir la relación entre una variable dependiente (en este caso, la calidad del aire) y una o más variables independientes. Útil cuando la relación entre las variables es lineal.
+Con gráficos no solo del PM2.5, sino también de PM1 y PM10. Gráficos con Z-score para observar los cambios respecto al promedio y un gráfico de barras con los valores más comunes.
 
-ARIMA: Modelo de promedio móvil e integración autoregresiva, usado para datos de series temporales. Puede ser útil para predecir la calidad del aire cuando hay patrones temporales.
+### Rutas de la aplicación:
+- **/**: Visualizador.
+- **/sensor{sensor_name}**: Muestra datos del sensor (GET) y recibe un rango de tiempo para mostrar datos en ese rango (POST).
+- **/sensor{sensor_name}/statistics**: Muestra estadísticas del sensor.
+- **/sensor{sensor_name}/predictions**: Permite seleccionar algoritmos de predicción y muestra resultados.
+- **/index**: Página de inicio.
+- **/add_donation**: Añadir una donación.
 
-Random Forest: Un algoritmo de aprendizaje automático basado en múltiples árboles de decisión. Es adecuado para problemas complejos con muchas variables, por lo que podría ser útil para predecir calidad de aire.
+### Archivos importantes:
+- **tools.py**: Funciones útiles para manejar datos y archivos.
+- **pred.py**: Funciones para los algoritmos de machine learning.
+- **dummy_donations.py**: Manejo de donaciones, aunque queremos migrar a Nostr.
+- **datatool.py**: Conexión con la base de datos de Canairio y manipulación de datos.
+- **const.py**: Guardado de datos importantes.
 
-SARIMA: Es una extensión del modelo ARIMA que incluye la estacionalidad, lo que lo hace útil para series temporales con patrones estacionales (como los cambios estacionales en la calidad del aire).
+En la carpeta **core/static** guardamos los QR dummy, el CSS de las páginas y un poco de JavaScript. No podemos migrar el JavaScript de los archivos HTML externamente porque se daña la gráfica debido a cómo Jinja carga el código de Python a variables de JavaScript.
 
-Lasso: Un modelo de regresión lineal que incluye regularización para evitar el sobreajuste. Puede ser útil si hay muchas variables relacionadas con la calidad del aire, ya que reduce la complejidad del modelo.
+En la carpeta **test/** se realizan pruebas, aunque está algo desordenada.
 
-XGBoost: Un algoritmo de árboles de decisión que utiliza boosting, lo que lo hace potente y eficiente para predicciones complejas, incluidas las de calidad del aire.
+Nos estamos enfocando en que la construcción de esta página sea útil para practicar para la hackatón de la NASA. No podemos usar este proyecto porque, si queremos ganar, tenemos que usar sus datos.
 
-Exponential Smoothing: Este método de suavizado exponencial se usa para hacer predicciones a partir de datos de series temporales. Es útil cuando los datos cambian suavemente a lo largo del tiempo.
-
-LSTM: Una red neuronal recurrente que maneja secuencias de datos y es ideal para predicciones basadas en series temporales, como la calidad del aire, debido a su capacidad para recordar dependencias a largo plazo.
-
-tratamos de usar prophet de facebook pero sigue siendo facebook , no funciona y esta desactualizado por eso sigue siendo facebook
-
-las estadisticas
-
-hicimos una pagina para observar las estadisticas cada sensor, 
-
-Suma
-Media
-Varianza
-Desviación estándar
-Máximo
-Mínimo
-Moda
-Curtosis
-Asimetría
-Coeficiente de variación (CV)
-Conteo de valores nulos
-
-con graficas no solo del pm2.5 tambien con el pm1, y pm10  
-
-graficos con Z-score para observar como cambian respecto al promedio y una grafica de barras con los valores mas comunes
-
-hay paginas como
-
-/ donde esta el visualizador
-
-/sensor{sensor_name}
-Página get: Muestra datos del sensor.
-Página post: Recibe un rango de tiempo desde un formulario para mostrar datos del sensor en ese rango.
-
-/sensor{sensor_name}/statistics
-Página: Muestra estadísticas del sensor.
-
-
-/sensor{sensor_name}/predictions
-
-
-Página get: Muestra la página para seleccionar algoritmos de predicción.
-Página post: Procesa el algoritmo seleccionado y muestra el resultado de la predicción.
-
-/index
-
-Página: Página de inicio (landing page).
-
-/add_donation
-Página: Muestra la página para añadir una donación.
-
-en la carpeta tools hay archivos como 
-
-tools.py
-pred.py
-dummy_donations.py
-datatool.py
-const.py
-
-
-tools.py
-
-algunas funciones utiles para manejar datos y archivos
-
-pred.py
-
-archivo donde tenemos funciones para los algoritmos de machine learning
-
-dummy_donations.py
-
-archivo para manejar las donaciones, como nos queremos mover a nostr, lo dejamos y es un producto que quien sabe que luego usemos
-
-datatool.py
-
-hay un codigo que nos facilita la conexion con la base de datos de canairio y herramientas para manipular los datos
-
-const.py
-
-deberia usarla para guardar datos imporatnes
-
-
-hay una carpeta core/static donde se guarda los qr dummys, el css de las paginas y un poco de javascript, no podemos migrar el javascript de los archivos de html externamente por que se nos daña la grafica por los templates de jinga cargan el codigo que va desde python a variables de javascript
-
-tambien hay una carpeta test/ son de se hacen pruebas, se deja un desorden
-
-y nos estamos enfocado en que la construccion de esta pagina sea util para practicar para la hackaton de la nasa, no podemos usar este proyecto por que si queremos ganar tenemos que usar los datos de ellos
