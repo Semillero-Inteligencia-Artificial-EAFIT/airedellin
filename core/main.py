@@ -41,7 +41,7 @@ async def update_sensor_data():
     global formatted_data
     while True:
         # Update the formatted data every 30 minutes
-        formatted_data = sensors.get_formatted_data()
+        formatted_data = await sensors.get_formatted_data()
         await asyncio.sleep(1800)  # 1800 seconds = 30 minutes
 
 @app.on_event("startup")
@@ -49,7 +49,10 @@ async def startup_event():
     # Start the background task to update sensor data every 30 minutes
     asyncio.create_task(update_sensor_data())
     
-
+@app.on_event("shutdown")
+async def shutdown_event():
+    for task in asyncio.all_tasks():
+        task.cancel()
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -96,6 +99,32 @@ async def get_sensor(request: Request, sensor_name: str):
         "donations": donations ,
     })
 
+@app.post("/sensor{sensor_name}")
+async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form("24h")):
+    range_option = rangetime  # This value comes directly from the form submission
+    print(range_option)
+    # You might need to map range_option to the format your sensors.data function expects
+    if range_option == "1w":
+        time_range = "7d"
+    elif range_option == "1m":
+        time_range = "4w"
+    elif range_option == "1y":
+        time_range = "182d"
+    else:
+        time_range = "24h"
+    print(time_range)
+    data = sensors.data(sensor_name, time_range)
+    data = [int(value) for value in data if value is not None]
+    donations=retrieve_data_for_sensor(sensor_name,dummy_donations)
+
+    return templates.TemplateResponse("sensors.html", {
+        "request": request,
+        "sensor_name": sensor_name,
+        "data": data,
+        "donations": donations ,
+
+    })
+
 @app.get("/sensor{sensor_name}/statistics", response_class=HTMLResponse)
 async def statistics(request: Request, sensor_name: str):
     #data = sensors.data(sensor_name)
@@ -116,29 +145,6 @@ async def statistics(request: Request, sensor_name: str):
         "pm1":pm1,
     })
 
-
-@app.post("/sensor{sensor_name}")
-async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form("24h")):
-    range_option = rangetime  # This value comes directly from the form submission
-    print(range_option)
-    # You might need to map range_option to the format your sensors.data function expects
-    if range_option == "1w":
-        time_range = "7d"
-    elif range_option == "1m":
-        time_range = "4w"
-    elif range_option == "1y":
-        time_range = "182d"
-    else:
-        time_range = "24h"
-    print(time_range)
-    data = sensors.data(sensor_name, time_range)
-    data = [int(value) for value in data if value is not None]
-
-    return templates.TemplateResponse("sensors.html", {
-        "request": request,
-        "sensor_name": sensor_name,
-        "data": data,
-    })
 
 @app.get("/sensor{sensor_name}/predictions", response_class=HTMLResponse)
 async def get_mlalgorithm(request: Request, sensor_name: str):

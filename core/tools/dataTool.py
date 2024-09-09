@@ -121,45 +121,50 @@ class Sensors:
             "coordinates": coords,
             "pm25_data": pm25_data
         }
-    def get_formatted_data(self,size=50):
+    async def get_formatted_data(self, size=50):
         features = []
-        print(self.names())
-        for name in self.names():
-            coords = self.coordinates(name)
-            pm25=self.data(name)[:10]
-            filtered_arr = [x for x in pm25 if x is not None]
-            #print(pm25)
+        print(self.names())  # Assuming self.names() is async, else remove await
+        
+        for name in self.names():  # Iterate over sensor names
+            coords = self.coordinates(name)  # Fetch coordinates asynchronously
+            pm25 = self.data(name)[:10]  # Fetch PM2.5 data asynchronously and limit to 10
+            filtered_arr = [x for x in pm25 if x is not None]  # Filter out None values
+
             if not filtered_arr:
-                mean_pm25 = 0  # Return None if there are no valid numbers
+                mean_pm25 = 0  # Set mean to 0 if there are no valid values
             else:
-                mean_pm25 = sum(filtered_arr) / len(filtered_arr)
+                mean_pm25 = sum(filtered_arr) / len(filtered_arr)  # Calculate the mean
+            
             print(mean_pm25)
-            if len(self.data(name))==0:
+            
+            if len(pm25) == 0:  # Skip if no PM2.5 data
                 continue
+            
             if coords[0] is not None and coords[1] is not None:
                 feature = {
                     "type": "Feature",
                     "properties": {
                         "name": name,
-                        "pm25": float(mean_pm25)  # This will include all PM2.5 data points
+                        "pm25": float(mean_pm25)  # PM2.5 average
                     },
                     "geometry": {
                         "type": "Point",
-                        "coordinates": coords
+                        "coordinates": coords  # Valid coordinates
                     }
                 }
-                features.append(feature)
             else:
                 feature = {
                     "type": "Feature",
                     "properties": {
                         "name": name,
-                        "pm25": float(mean_pm25)  # This will include all PM2.5 data points
+                        "pm25": float(mean_pm25)  # PM2.5 average
                     },
                     "geometry": {
                         "type": "Point",
-                        "coordinates": generate_random_coordinates()
+                        "coordinates": generate_random_coordinates()  # Generate random coordinates if missing
                     }
                 }
-                features.append(feature)
+            
+            features.append(feature)
+        
         return features
