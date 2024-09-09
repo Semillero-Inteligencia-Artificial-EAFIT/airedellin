@@ -1,6 +1,3 @@
-Aquí tienes el texto con la ortografía corregida:
-
----
 
 # Airedellín 🌿 (en progreso 🏗️🚧)
 
