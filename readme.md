@@ -4,12 +4,12 @@
 <div style="text-align: center;">
 <img src="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/logo.png" alt="Description" style="width: 50%; height: 50%;">  
 </div>
+</center>
+
 **Translations in**
 [Español](https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/readme_es.md)
 [Deutsch](https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/readme_de.md) 
 [Русский](https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/readme_ru.md)
-
-</center>
 
 **Airedellín** is a repository initiated to promote citizen science in Medellín, aiming to address the issue of air quality and PM2.5. The platform builds upon projects from citizen groups like Canairio and Unloquer, with a focus on visualizing and analyzing air quality data to improve public health.
 
