@@ -24,6 +24,16 @@ The heatmap can be activated or deactivated with a button.
 
 There’s also a 3D relief feature that makes the page more visually appealing.
 
+We are using this techonlgis
+
+- **Python** & **FastAPI**: For backend and API development.
+- **JavaScript**: For frontend interactions.
+- **Deck.gl** & **MapLibre**: For beautiful, responsive map visualizations.
+- **Bootstrap**: For a sleek and modern UI.
+- **InfluxDB**: For efficient data storage and querying.
+- **CanAirIO**: Real-time air quality data provider for Medellín.
+- **Other libraris**: like Tensorflow, Xgboost ,Scikit-learn, Statsmodels
+
 There are three special sections for sensors on the sensor page:
 - Donations,
 - Statistics,
@@ -32,6 +42,7 @@ There are three special sections for sensors on the sensor page:
 Donations were proposed as an incentive and suggested by Unloquer’s hackerspace. We designed a universal mechanism based on trust that allows users to add data to a sensor for donation, along with a QR code. The challenge is trust, which is why we want to use Nostr to avoid being responsible for sensors.
 
 The platform includes machine learning algorithms because, in the machine learning research group, we conducted an exercise to implement time series algorithms. Many of these algorithms can be improved, and they are not optimal for these tasks.
+
 
 We use the following algorithms and models:
 

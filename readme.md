@@ -20,7 +20,7 @@ Airedellín leverages cutting-edge technologies to tackle this challenge and vis
 - **Bootstrap**: For a sleek and modern UI.
 - **InfluxDB**: For efficient data storage and querying.
 - **CanAirIO**: Real-time air quality data provider for Medellín.
-- **Other libraris**: tensorflow,xgboost,scikit-learn,statsmodels
+- **Other libraris**: like Tensorflow, Xgboost ,Scikit-learn, Statsmodels
 
 
 
@@ -58,6 +58,15 @@ some of this modeles are made for learning propuses
 - `/sensor{sensor_name}/predictions`: Lets users select prediction algorithms and view the result.
 - `/add_donation`: Page to donate and support sensors.
 - `/index`: index website for present the project
+
+
+## Screenshots 🎑
+
+![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/1.png)
+![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/3.png)
+![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/4.png)
+![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/5.png)
+
 
 ---
 
@@ -115,13 +124,6 @@ Special thanks to **Hackerspace Unloquer** and **CanAirIO** for inspiring and su
 Join us in improving Medellín’s air quality for everyone. 🚀🌱
 
 ---
-
-## Screenshots 🎑
-
-![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/1.png)
-![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/3.png)
-![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/4.png)
-![](https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/5.png)
 
 ### Important Notes
 
