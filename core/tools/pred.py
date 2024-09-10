@@ -70,6 +70,83 @@ def linear_regresion(y, num_pred=num_pred):
   
   return list(predicted_pm25.flatten()), float(mse)  # Flatten predicted_pm25 for easy reading
 
+def Poly_regresion_with_lag(y, degree=2, n_lags=2, num_pred=10):
+    """
+    Perform Polynomial regression on a time series data and predict future values using lag features. 
+
+    Parameters:
+    y (array-like): The input time series data.
+    degree (int): Degree of polynomial features.
+    n_lags (int): Number of lag features used for prediction.
+    num_pred (int): Number of future time steps to predict.
+
+    Returns:
+    tuple: A tuple containing:
+        - list: Predicted future values of the time series.
+        - float: Mean squared error of the model on the test set.
+    
+    Raises:
+    ValueError: If the input array `y` is empty or if the dataset is too small to split.
+    """
+    # Function that adds the lag columns to the DataFrame
+    def lag_features_df(y, n_lags):
+        df = pd.DataFrame(y, columns=["y"])
+        for lag in range(1, n_lags + 1):
+            df[f"lag_{lag}"] = df["y"].shift(lag)
+        df.dropna(inplace=True)  # Drop rows with NaN values
+        return df
+    
+    # Convert y to a numpy array and check if it's not empty
+    y = np.array(y)
+    if y.size == 0:
+        return [], "The input array y is empty."
+    
+    # Generate lagged features and target variable
+    lagged_df = lag_features_df(y, n_lags=n_lags)
+    X_lags = lagged_df.drop(columns=["y"]).values
+    y_lags = lagged_df["y"].values
+
+    # Generate the time steps for the lagged data
+    X_time = np.arange(n_lags, len(y)).reshape(-1, 1)
+    
+    # Generate polynomial features
+    poly = PolynomialFeatures(degree=degree)
+    X_poly = poly.fit_transform(X_time)
+    
+    # Combine polynomial features with lag features
+    X_combined = np.hstack([X_poly, X_lags])
+
+    # Split data into training and test sets
+    x_train, x_test, y_train, y_test = train_test_split(X_combined, y_lags, test_size=0.2, random_state=42)
+    
+    # Initialize and fit the model
+    model = LinearRegression()
+    model.fit(x_train, y_train)
+    
+    # Predict on the test set
+    y_pred = model.predict(x_test)
+    mse = mean_squared_error(y_test, y_pred)
+
+    # Predict future values
+    future_time = np.arange(len(y), len(y) + num_pred).reshape(-1, 1)  # Generate future time steps
+    future_time_poly = poly.transform(future_time)  # Apply polynomial transformation to future time steps
+    
+    # For future predictions, use the last n_lags values from y as lagged features
+    last_known_values = y[-n_lags:]
+    
+    future_predictions = []
+    for i in range(num_pred):
+        # Create input for the model by combining future time and lagged values
+        X_future = np.hstack([future_time_poly[i].reshape(1, -1), last_known_values.reshape(1, -1)])
+        future_value = model.predict(X_future)[0]
+        future_predictions.append(future_value)
+        
+        # Update last_known_values with the predicted value to generate further predictions
+        last_known_values = np.roll(last_known_values, -1)
+        last_known_values[-1] = future_value
+
+    return list(future_predictions), float(mse)
+	
 def arima(y, order=(2, 1, 2), forecast_steps=num_pred):
   """
   Fit an ARIMA model to the time series data and forecast future values.
