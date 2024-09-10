@@ -26,7 +26,6 @@ class Sensors:
         self.table="fixed_stations_01"
 
     def names(self):
-        print(self.db)
         query = 'SELECT DISTINCT("name") FROM "fixed_stations_01" WHERE time > now() - 7d'
         result = self.client.query(query)
         return [item['distinct'] for item in result.get_points()]
@@ -58,7 +57,6 @@ class Sensors:
             return pm25,date
         else:
             result = self.client.query(query)
-            #print(list(result.get_points()))
             return [value["data"] for value in result.get_points()]
     def data_complate_particules(self, name,time="24h",date=False):
         """
@@ -109,12 +107,9 @@ class Sensors:
             f" FROM \"fixed_stations_01\" WHERE \"name\" = '{name}' AND time > now() - 1d"
         )
         result = self.client.query(query)
-        #print(result)  # Print the raw result for debugging
         points = list(result.get_points())
-        #print(points)
         if points:
             cords=pgh.decode(points[0].get("geohash"))
-            print(cords)
             return cords[1],cords[0]
         return None,None
 
@@ -129,11 +124,9 @@ class Sensors:
         }
     async def get_formatted_data(self, size=50):
         features = []
-        print(self.names())  # Assuming self.names() is async, else remove await
         
         for name in self.names():  # Iterate over sensor names
             coords = self.coordinates(name)
-            print(coords)  
             pm25 = self.data(name)[:10]  
             filtered_arr = [x for x in pm25 if x is not None]  # Filter out None values
 
@@ -142,7 +135,6 @@ class Sensors:
             else:
                 mean_pm25 = sum(filtered_arr) / len(filtered_arr)  # Calculate the mean
             
-            print(mean_pm25)
             
             if len(pm25) == 0:  # Skip if no PM2.5 data
                 continue

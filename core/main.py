@@ -13,7 +13,7 @@ import asyncio
 
 from .tools.dummy_donations import load_data,retrieve_data_for_sensor
 from .tools.dataTool import Sensors
-from .tools.pred import linear_regresion,arima,random_forest,sarima,lasso,xgboost,exponential_smoothing, LSTM
+from .tools.pred import linear_regresion,arima,random_forest,sarima,lasso,xgboost,exponential_smoothing, LSTM, Poly_regresion_with_lag
 
 from .tools.tools import *
 
@@ -27,7 +27,7 @@ host = "influxdb.canair.io"
 sensors = Sensors("canairio", host)
 templates = Jinja2Templates(directory="core/templates")
 
-algorithm_names = ["originalData","linearRegression", "Arima", "randomForest","Sarima","Lasso","Xgboost","ExponentialSmoothing","LSTM"]
+algorithm_names = ["originalData","linearRegression", "Arima", "randomForest","Sarima","Lasso","Xgboost","ExponentialSmoothing","LSTM","polyRegresion"]
 algorithm_map = {
     "linearRegression": linear_regresion,
     "Arima": arima,
@@ -36,7 +36,8 @@ algorithm_map = {
     "Lasso":lasso,
     "Xgboost":xgboost,
     "ExponentialSmoothing":exponential_smoothing,
-    "LSTM":LSTM
+    "LSTM":LSTM,
+    "polyRegresion":Poly_regresion_with_lag
 }
 
 formatted_data = []
@@ -106,7 +107,6 @@ async def get_sensor(request: Request, sensor_name: str):
 @app.post("/sensor{sensor_name}")
 async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form("24h")):
     range_option = rangetime  # This value comes directly from the form submission
-    #print(range_option)
     
     # Map the range option to the correct time range
     if range_option == "1w":
@@ -118,7 +118,6 @@ async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form(
     else:
         time_range = "24h"
     
-    #print(time_range)
     
     # Ensure that the data fetching method is asynchronous
     # Define the function to run in the background
@@ -149,7 +148,6 @@ async def statistics(request: Request, sensor_name: str):
     pm10=data["pm10"]
     pm1=data["pm1"]
 
-    #print(data)
     stad = statistics_extractor(pm25)
     #data = [int(value) for value in data if value is not None]
     return templates.TemplateResponse("statistics.html", {
