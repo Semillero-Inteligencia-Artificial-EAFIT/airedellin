@@ -106,7 +106,7 @@ async def get_sensor(request: Request, sensor_name: str):
 @app.post("/sensor{sensor_name}")
 async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form("24h")):
     range_option = rangetime  # This value comes directly from the form submission
-    print(range_option)
+    #print(range_option)
     
     # Map the range option to the correct time range
     if range_option == "1w":
@@ -118,7 +118,7 @@ async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form(
     else:
         time_range = "24h"
     
-    print(time_range)
+    #print(time_range)
     
     # Ensure that the data fetching method is asynchronous
     # Define the function to run in the background
@@ -174,35 +174,49 @@ async def get_mlalgorithm(request: Request, sensor_name: str):
         "result": None
     })
 
+
 @app.post("/sensor{sensor_name}/predictions", response_class=HTMLResponse)
 async def post_mlalgorithm(
     request: Request,
     sensor_name: str,
     algorithm: str = Form(...),
+    background_tasks: BackgroundTasks = None  # Optional background tasks
 ):  
-    pm25,dates = sensors.data(sensor_name,date=True)
-    print(dates,pm25)
-    data = [int(value) for value in pm25 if value is not None]
-    
-    # Apply the selected algorithm
-    if algorithm in algorithm_map:
+    # Offload sensor data fetching to a separate thread
+    def fetch_sensor_data(sensor_name):
+        pm25, dates = sensors.data(sensor_name, date=True)
+        data = [int(value) for value in pm25 if value is not None]
+        return data, dates
 
-        result = algorithm_map[algorithm](data)
-    elif algorithm=="originalData":
-        result = [[int(value) for value in data if value is not None],"0"]
-    else:
-        random_list = [random.randint(0, 55) for _ in range(200)]
-        result = [random_list,"THE ALGORITHM SELECTED NOT EXIST"]  # If no valid algorithm is selected, return the original data
+    # Run fetch_sensor_data asynchronously
+    data_future = executor.submit(fetch_sensor_data, sensor_name)
     
-    #print(data[0:20],result[0:20]) # for debug
+    # Wait for the data fetching to complete
+    data, dates = data_future.result()
+    
+    # Apply the selected algorithm in a separate thread (if heavy computation)
+    def apply_algorithm(algorithm, data):
+        if algorithm in algorithm_map:
+            return algorithm_map[algorithm](data)
+        elif algorithm == "originalData":
+            return [[int(value) for value in data if value is not None], "0"]
+        else:
+            random_list = [random.randint(0, 55) for _ in range(200)]
+            return [random_list, "THE ALGORITHM SELECTED DOES NOT EXIST"]
 
+    # Run the algorithm asynchronously
+    result_future = executor.submit(apply_algorithm, algorithm, data)
+    result = result_future.result()
+
+    # Render the result asynchronously
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
         "algorithm_names": algorithm_names,
         "algorithm_selected": algorithm,
-        "data": list(map(int,result[0])),
-        "result": "Error of "+str(result[1])
+        "data": list(map(int, result[0])),
+        "result": "Error of " + str(result[1])
     })
+
 
 
 @app.get("/index", response_class=HTMLResponse)

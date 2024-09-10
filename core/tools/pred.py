@@ -20,7 +20,7 @@ import warnings
 
 
 import pandas as pd
-num_pred=200
+num_pred=2000
 
 def linear_regresion(y, num_pred=num_pred):
   """

@@ -1,85 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airedellin</title>
+    <title>Airedellín 🌿 | Improving Medellín's Air Quality</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/static/css/landing_page.css">
+    <link rel="icon" href="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/logo.png"/>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
 
+        /* Hero section */
+        .hero {
+            background: url('https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/1.png') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+        }
+
+        .hero .btn {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .hero .btn:hover {
+            background-color: #218838;
+        }
+
+        /* About section */
+        .about {
+            padding: 50px 20px;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+
+        .about h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .about p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Features section */
+        .features {
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .features .card {
+            margin: 20px 0;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .features .card img {
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .features .card-body {
+            padding: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #28a745;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .about h2, .features h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-
-    <!-- Watercolor Background -->
-    <div class="watercolor-bg"></div>
-
-    <!-- Header -->
-    <header>
-        <h1>Airedellin</h1>
-        <nav>
-            <a href="/index#air-quality">Air Quality</a>
-            <a href="/index#about">About</a>
-            <a href="/index#services">Services</a>
-            <a href="/index#login-register">Login/Register</a>
-        </nav>
-    </header>
 
     <!-- Hero Section -->
     <section class="hero">
         <div>
-            <h2>Welcome to Airedellin</h2>
-            <p>Empowering Communities with Air Quality Insights</p>
-            <button class="btn">Get Started</button>
+            <h1><b>Airedellín</b> 🌿</h1>
+            <p><b>Improving Medellín’s air quality for a better tomorrow.<b></p>
+            <a href="#about" class="btn">Learn More</a>
         </div>
     </section>
 
     <!-- About Section -->
     <section id="about" class="about">
-        <h2>About Us</h2>
-        <p>We are a dedicated team participating in NASA's Space Apps Challenge, offering solutions to monitor and predict air quality for better urban living.</p>
+        <h2>About Airedellín</h2>
+        <p>
+            Airedellín is a citizen science initiative aimed at addressing the growing issue of air quality in Medellín. 
+            We leverage modern technologies like machine learning, interactive maps, and sensor data to provide insights 
+            and predictions on PM2.5 levels. Our goal is to empower the community to take actionable steps toward 
+            improving public health.
+        </p>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <h2>Our Services</h2>
-        <div class="card">
-            <h3>Data Collection</h3>
-            <p>We gather real-time air quality data using advanced sensors.</p>
-        </div>
-        <div class="card">
-            <h3>Prediction Models</h3>
-            <p>We employ AI-driven models to predict air quality trends.</p>
-        </div>
-        <div class="card">
-            <h3>Community Engagement</h3>
-            <p>We provide tools and platforms to help communities take action.</p>
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <h2>Features</h2>
+
+        <div class="container">
+            <div class="row">
+                <!-- Feature 1 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/2.png" alt="Map Visualization" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="card-title">Map Visualization</h3>
+                            <p class="card-text">Real-time, interactive maps displaying air quality data from various sensors across the city, color-coded to show PM2.5 levels.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature 2 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/4_new.png" alt="Predictions" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="card-title">Predictions</h3>
+                            <p class="card-text">Use machine learning models like Linear Regression, LSTM, and XGBoost to predict air quality patterns based on historical data.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feature 3 -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/5.png" alt="Heatmap" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="card-title">Heatmap</h3>
+                            <p class="card-text">Visualize the intensity of PM2.5 concentrations with a heatmap to understand the air quality variations in Medellín.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
-
-    <!-- Air Quality Section -->
-    <section id="air-quality" class="air-quality">
-        <h2>Air Quality Predictions</h2>
-        <div class="card">
-            <h3>Current Data</h3>
-            <p>View real-time air quality data in your area.</p>
-            <button class="btn">View Data</button>
-        </div>
-        <div class="card">
-            <h3>Forecast</h3>
-            <p>Explore our predictive models for air quality.</p>
-            <button class="btn">See Forecast</button>
-        </div>
-        <div class="card">
-            <h3>Interactive Map</h3>
-            <p>Layer different air quality metrics on an interactive map.</p>
-            <button class="btn">Explore Map</button>
-        </div>
-    </section>
-
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2024 Airedellin. All rights reserved.</p>
+        <p>&copy; 2024 Airedellín. All rights reserved. | <a href="https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin">GitHub Repository</a></p>
+        <p>
+            Translations available in:
+            <a href="https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/readme_es.md">Español</a> | 
+            <a href="https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/readme_de.md">Deutsch</a> | 
+            <a href="https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/readme_ru.md">Русский</a>
+        </p>
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
