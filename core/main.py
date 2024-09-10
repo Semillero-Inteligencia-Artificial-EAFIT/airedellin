@@ -3,6 +3,9 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
+import concurrent.futures
+from fastapi import BackgroundTasks
+
 import json
 import random
 
@@ -16,6 +19,7 @@ from .tools.tools import *
 
 app = FastAPI(debug=True)
 app.mount('/static', StaticFiles(directory='core/static', html=True), name='static')
+executor = concurrent.futures.ThreadPoolExecutor()
 
 token = readtxtline("data/token.txt")
 dummy_donations=load_data("data/dummy_donations.json")
@@ -103,7 +107,8 @@ async def get_sensor(request: Request, sensor_name: str):
 async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form("24h")):
     range_option = rangetime  # This value comes directly from the form submission
     print(range_option)
-    # You might need to map range_option to the format your sensors.data function expects
+    
+    # Map the range option to the correct time range
     if range_option == "1w":
         time_range = "7d"
     elif range_option == "1m":
@@ -112,17 +117,28 @@ async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form(
         time_range = "182d"
     else:
         time_range = "24h"
+    
     print(time_range)
-    data = sensors.data(sensor_name, time_range)
-    data = [int(value) for value in data if value is not None]
-    donations=retrieve_data_for_sensor(sensor_name,dummy_donations)
+    
+    # Ensure that the data fetching method is asynchronous
+    # Define the function to run in the background
+    def get_sensor_data(sensor_name, time_range):
+        data = sensors.data(sensor_name, time_range)
+        return [int(value) for value in data if value is not None]
 
+    # Run get_sensor_data in a separate thread
+    data_future = executor.submit(get_sensor_data, sensor_name, time_range)
+    data = data_future.result()
+
+    # If retrieve_data_for_sensor is I/O-bound, ensure it is asynchronous
+    donations = retrieve_data_for_sensor(sensor_name, dummy_donations)
+
+    # Return the template response asynchronously
     return templates.TemplateResponse("sensors.html", {
         "request": request,
         "sensor_name": sensor_name,
         "data": data,
-        "donations": donations ,
-
+        "donations": donations,
     })
 
 @app.get("/sensor{sensor_name}/statistics", response_class=HTMLResponse)
