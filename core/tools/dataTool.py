@@ -1,5 +1,6 @@
 from influxdb import InfluxDBClient
 import random
+import pygeohash as pgh
 
 
 def generate_random_coordinates(x_range=(-80, 80), y_range=(-60, 60)):
@@ -104,14 +105,19 @@ class Sensors:
 
     def coordinates(self, name):
         query = (
-            "SELECT last(\"latitude\") AS \"lat\", last(\"longitude\") AS \"lon\" "
-            f"FROM \"fixed_stations_01\" WHERE \"name\" = '{name}' AND time > now() - 1d"
+            "SELECT last(\"geo\") AS \"geohash\""
+            f" FROM \"fixed_stations_01\" WHERE \"name\" = '{name}' AND time > now() - 1d"
         )
         result = self.client.query(query)
+        #print(result)  # Print the raw result for debugging
         points = list(result.get_points())
+        #print(points)
         if points:
-            return points[0].get("lat"), points[0].get("lon")
-        return None, None
+            cords=pgh.decode(points[0].get("geohash"))
+            print(cords)
+            return cords[1],cords[0]
+        return None,None
+
 
     def station_data(self, name):
         coords = self.coordinates(name)
@@ -126,8 +132,9 @@ class Sensors:
         print(self.names())  # Assuming self.names() is async, else remove await
         
         for name in self.names():  # Iterate over sensor names
-            coords = self.coordinates(name)  # Fetch coordinates asynchronously
-            pm25 = self.data(name)[:10]  # Fetch PM2.5 data asynchronously and limit to 10
+            coords = self.coordinates(name)
+            print(coords)  
+            pm25 = self.data(name)[:10]  
             filtered_arr = [x for x in pm25 if x is not None]  # Filter out None values
 
             if not filtered_arr:

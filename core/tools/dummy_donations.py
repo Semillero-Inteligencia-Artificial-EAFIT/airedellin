@@ -1,7 +1,5 @@
 import json
 import os
-
-
 def load_data(data_file):
     """Load data from the file."""
     if os.path.exists(data_file):
