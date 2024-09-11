@@ -23,8 +23,11 @@ from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 
-import warnings
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
 
+import warnings
 
 import pandas as pd
 num_pred=2000
@@ -532,124 +535,121 @@ def LSTM(y, num_pred=num_pred):
 
     return predictions.tolist(),mse
 
-try:
-    def TCN(y, num_pred=num_pred):
-        import torch
-        import torch.nn as nn
-        from torch.utils.data import DataLoader, TensorDataset
-        """
-        underconstruccion
-        """
-        y = np.array(y)
-        if y.size == 0:
-            return 0, "Error"
 
-        y = torch.tensor(y, dtype=torch.float32)
+def TCN(y, num_pred=num_pred):
+    """
+    underconstruccion
+    """
+    y = np.array(y)
+    if y.size == 0:
+        return 0, "Error"
 
-        # Create a tensor for X (in this case, range values)
-        X = torch.tensor(np.arange(len(y)), dtype=torch.float32)
-        X = X.unsqueeze(1)  
+    y = torch.tensor(y, dtype=torch.float32)
 
-        #print("X shape:", X.shape)
-        #print("y shape:", y.shape)
+    # Create a tensor for X (in this case, range values)
+    X = torch.tensor(np.arange(len(y)), dtype=torch.float32)
+    X = X.unsqueeze(1)  
 
-        # Define sequence length and create sequences
-        seq_len = 100
-        X_seq = []
-        y_seq = []
+    #print("X shape:", X.shape)
+    #print("y shape:", y.shape)
 
-        for i in range(len(X) - seq_len):
-            X_seq.append(X[i:i+seq_len])
-            y_seq.append(y[i+seq_len])
+    # Define sequence length and create sequences
+    seq_len = 100
+    X_seq = []
+    y_seq = []
 
-        X_seq = torch.stack(X_seq)
-        y_seq = torch.stack(y_seq)
+    for i in range(len(X) - seq_len):
+        X_seq.append(X[i:i+seq_len])
+        y_seq.append(y[i+seq_len])
 
-        #print("X_seq shape:", X_seq.shape)
-        #print("y_seq shape:", y_seq.shape)
+    X_seq = torch.stack(X_seq)
+    y_seq = torch.stack(y_seq)
 
-        # Create dataset and dataloader
-        dataset = TensorDataset(X_seq, y_seq)
-        batch_size = 32
-        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    #print("X_seq shape:", X_seq.shape)
+    #print("y_seq shape:", y_seq.shape)
 
-        # TCN model
-        class TCN(nn.Module):
-            def __init__(self, input_size, output_size, num_channels, kernel_size, dropout):
-                super(TCN, self).__init__()
-                layers = []
-                num_levels = len(num_channels)
-                for i in range(num_levels):
-                    dilation_size = 2 ** i
-                    in_channels = input_size if i == 0 else num_channels[i-1]
-                    out_channels = num_channels[i]
-                    layers += [nn.Conv1d(in_channels, out_channels, kernel_size,
-                                         padding=(kernel_size-1) * dilation_size,
-                                         dilation=dilation_size),
-                               nn.ReLU(),
-                               nn.Dropout(dropout)]
-                self.network = nn.Sequential(*layers)
-                self.linear = nn.Linear(num_channels[-1], output_size)
+    # Create dataset and dataloader
+    dataset = TensorDataset(X_seq, y_seq)
+    batch_size = 32
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
-            def forward(self, x):
-                x = x.transpose(1, 2)  # Change shape from [batch, seq_len, features] to [batch, features, seq_len]
-                x = self.network(x)
-                return self.linear(x[:, :, -1])
+    # TCN model
+    class TCN(nn.Module):
+        def __init__(self, input_size, output_size, num_channels, kernel_size, dropout):
+            super(TCN, self).__init__()
+            layers = []
+            num_levels = len(num_channels)
+            for i in range(num_levels):
+                dilation_size = 2 ** i
+                in_channels = input_size if i == 0 else num_channels[i-1]
+                out_channels = num_channels[i]
+                layers += [nn.Conv1d(in_channels, out_channels, kernel_size,
+                                     padding=(kernel_size-1) * dilation_size,
+                                     dilation=dilation_size),
+                           nn.ReLU(),
+                           nn.Dropout(dropout)]
+            self.network = nn.Sequential(*layers)
+            self.linear = nn.Linear(num_channels[-1], output_size)
 
-        # Model and training
-        input_size = 1  # Single feature (time index)
-        output_size = 1  # Predicting a single value (pm25)
-        num_channels = [32, 32, 32, 32]  # Adjust as needed
-        kernel_size = 3
-        dropout = 0.2
+        def forward(self, x):
+            x = x.transpose(1, 2)  # Change shape from [batch, seq_len, features] to [batch, features, seq_len]
+            x = self.network(x)
+            return self.linear(x[:, :, -1])
 
-        model = TCN(input_size, output_size, num_channels, kernel_size, dropout)
-        criterion = nn.MSELoss()
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    # Model and training
+    input_size = 1  # Single feature (time index)
+    output_size = 1  # Predicting a single value (pm25)
+    num_channels = [32, 32, 32, 32]  # Adjust as needed
+    kernel_size = 3
+    dropout = 0.2
 
-        num_epochs = 6
-        for epoch in range(num_epochs):
-            model.train()
-            total_loss = 0
-            for X_batch, y_batch in dataloader:
-                optimizer.zero_grad()
-                output = model(X_batch)
-                loss = criterion(output.squeeze(), y_batch)
-                loss.backward()
-                optimizer.step()
-                total_loss += loss.item()
+    model = TCN(input_size, output_size, num_channels, kernel_size, dropout)
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+    num_epochs = 2
+    for epoch in range(num_epochs):
+        model.train()
+        total_loss = 0
+        for X_batch, y_batch in dataloader:
+            optimizer.zero_grad()
+            output = model(X_batch)
+            loss = criterion(output.squeeze(), y_batch)
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
+        
+        avg_loss = total_loss / len(dataloader)
+        print(f"Epoch {epoch+1}/{num_epochs}, Loss: {avg_loss:.4f}")
+
+    # Save the model
+    #torch.save(model.state_dict(), 'tcn_model.pth')
+
+    # Load the model
+    #model.load_state_dict(torch.load('tcn_model.pth'))
+    model.eval()
+    # Initialize a list to store the predicted values
+    predicted_values = []
+
+    # Use the model to predict the next values
+    with torch.no_grad():
+        # Get the last sequence from the data
+        x_last = X_seq[-1].unsqueeze(0)
+        
+        for _ in range(num_pred):
+            # Predict the next value
+            y_pred = model(x_last)
             
-            avg_loss = total_loss / len(dataloader)
-            print(f"Epoch {epoch+1}/{num_epochs}, Loss: {avg_loss:.4f}")
-
-        # Save the model
-        #torch.save(model.state_dict(), 'tcn_model.pth')
-
-        # Load the model
-        #model.load_state_dict(torch.load('tcn_model.pth'))
-        model.eval()
-        # Initialize a list to store the predicted values
-        predicted_values = []
-
-        # Use the model to predict the next values
-        with torch.no_grad():
-            # Get the last sequence from the data
-            x_last = X_seq[-1].unsqueeze(0)
+            # Append the predicted value to the list
+            predicted_values.append(y_pred.item())
             
-            for _ in range(num_pred):
-                # Predict the next value
-                y_pred = model(x_last)
-                
-                # Append the predicted value to the list
-                predicted_values.append(y_pred.item())
-                
-                # Update the sequence with the predicted value
-                # Assuming the input shape for the model is [batch_size, sequence_length, features]
-                # and you need to update the sequence by removing the oldest value and adding the new one
-                x_last = torch.cat((x_last[:, 1:, :], y_pred.unsqueeze(0).unsqueeze(0)), dim=1)
+            # Update the sequence with the predicted value
+            # Assuming the input shape for the model is [batch_size, sequence_length, features]
+            # and you need to update the sequence by removing the oldest value and adding the new one
+            y_pred = y_pred.unsqueeze(1)  # This will make y_pred 3D if it starts as 2D.
+            x_last = torch.cat((x_last[:, 1:, :], y_pred), dim=1)
 
-            print("Predicted PM2.5 values for the next 100 time steps:", predicted_values)
-        #mse = mean_squared_error(validation_data, predicted_values)
-        return predicted_values#,mse
-except:
-    pass
+
+        print("Predicted PM2.5 values for the next 100 time steps:", predicted_values)
+    #mse = mean_squared_error(validation_data, predicted_values)
+    return predicted_values,criterion
