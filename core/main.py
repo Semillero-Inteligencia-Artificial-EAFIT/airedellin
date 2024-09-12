@@ -174,30 +174,23 @@ async def get_mlalgorithm(request: Request, sensor_name: str):
     })
 
 
+
+
 @app.post("/sensor{sensor_name}/predictions", response_class=HTMLResponse)
 async def post_mlalgorithm(
     request: Request,
     sensor_name: str,
     algorithm: str = Form(...),
-    background_tasks: BackgroundTasks = None  # Optional background tasks
+    background_tasks: BackgroundTasks = None
 ):  
-    # Offload sensor data fetching to a separate thread
-    def fetch_sensor_data(sensor_name):
-        data=sensors.data_complate_particules(sensor_name,date=True)
+    async def fetch_sensor_data(sensor_name):
+        # Assuming data_complate_particules is a synchronous function
+        data = await asyncio.to_thread(sensors.data_complate_particules, sensor_name, date=True)
         print(data)
-        pm25=data["pm25"]
-        #pm10=data["pm10"]
-        #pm1=data["pm1"]
-        dates=data["dates"]
+        pm25 = data["pm25"]
+        dates = data["dates"]
         return pm25, dates
 
-    # Run fetch_sensor_data asynchronously
-    data_future = executor.submit(fetch_sensor_data, sensor_name)
-    
-    # Wait for the data fetching to complete
-    data, dates = data_future.result()
-    
-    # Apply the selected algorithm in a separate thread (if heavy computation)
     def apply_algorithm(algorithm, data):
         if algorithm in algorithm_map:
             return algorithm_map[algorithm](data)
@@ -207,9 +200,11 @@ async def post_mlalgorithm(
             random_list = [random.randint(0, 55) for _ in range(200)]
             return [random_list, "THE ALGORITHM SELECTED DOES NOT EXIST"]
 
-    # Run the algorithm asynchronously
-    result_future = executor.submit(apply_algorithm, algorithm, data)
-    result = result_future.result()
+    # Fetch sensor data asynchronously
+    data, dates = await fetch_sensor_data(sensor_name)
+
+    # Apply the algorithm in a separate thread
+    result = await asyncio.to_thread(apply_algorithm, algorithm, data)
 
     # Render the result asynchronously
     return templates.TemplateResponse("ml_algorithms.html", {
@@ -219,7 +214,6 @@ async def post_mlalgorithm(
         "data": list(map(int, result[0])),
         "result": "Error of " + str(result[1])
     })
-
 
 
 @app.get("/index", response_class=HTMLResponse)
