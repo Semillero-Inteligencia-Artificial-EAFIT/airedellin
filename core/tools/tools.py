@@ -109,3 +109,14 @@ def statistics_extractor(data):
         "ocurrences": ocurrences,
 
     }
+
+def range_option_function(range_option):
+    if range_option == "1w":
+        time_range = "7d"
+    elif range_option == "1m":
+        time_range = "4w"
+    elif range_option == "1y":
+        time_range = "182d"
+    else:
+        time_range = "24h"
+    return time_range

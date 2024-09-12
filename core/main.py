@@ -107,18 +107,8 @@ async def get_sensor(request: Request, sensor_name: str):
 
 @app.post("/sensor{sensor_name}")
 async def post_sensor(request: Request, sensor_name: str, rangetime: str = Form("24h")):
-    range_option = rangetime  # This value comes directly from the form submission
-    
-    # Map the range option to the correct time range
-    if range_option == "1w":
-        time_range = "7d"
-    elif range_option == "1m":
-        time_range = "4w"
-    elif range_option == "1y":
-        time_range = "182d"
-    else:
-        time_range = "24h"
-    
+    # rangetime value comes directly from the form submission
+    time_range = range_option_function(rangetime)
     
     # Ensure that the data fetching method is asynchronous
     # Define the function to run in the background
@@ -172,8 +162,6 @@ async def get_mlalgorithm(request: Request, sensor_name: str):
         "data": data,
         "result": None
     })
-
-
 
 
 @app.post("/sensor{sensor_name}/predictions", response_class=HTMLResponse)
