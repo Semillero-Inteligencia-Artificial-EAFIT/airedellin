@@ -98,8 +98,8 @@ def statistics_extractor(data):
     if not data:
         return None
     total_sum=0
-    max_value=0
-    min_value=9999999999999999999999999999
+    max_value = float('-inf')
+    min_value = float('inf')
     n = len(data)
     none_count=0
     ocurrences={}
@@ -136,14 +136,20 @@ def statistics_extractor(data):
     # Variance, standard deviation, skewness, and kurtosis
     variance = m2 / n
     std_dev = variance ** 0.5
-    skewness = (m3 / n) / (std_dev ** 3)
-    kurtosis = (m4 / n) / (variance ** 2) - 3
+    if std_dev == 0:
+        skewness = 0
+        kurtosis = 0
+        cv = 0
+        z_scores = [0 for x in data]
 
+    else:
+        skewness = (m3 / n) / (std_dev ** 3)
+        kurtosis = (m4 / n) / (variance ** 2) - 3
+        cv = std_dev / mean
+        z_scores = [(x - mean) / std_dev for x in data]
     
     # Mode
     mode = max(set(data), key=data.count)
-    cv = std_dev / mean
-    z_scores = [(x - mean) / std_dev for x in data]
 
     return {
         "sum": total_sum,

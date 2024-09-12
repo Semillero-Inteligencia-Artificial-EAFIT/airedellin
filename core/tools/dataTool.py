@@ -168,6 +168,59 @@ class Sensors:
                     pm1.append(value["mean_pm1"])            
             return {"pm25":pm25,"pm10":pm10,"pm1":pm1}
 
+    def data_complate_particules(self, name,time="24h",date=False):
+        """
+        Retrieves PM2.5, PM10, and PM1 data for a specific station within the specified time range.
+
+        Parameters:
+        - name (str): The name of the station to query.
+        - time (str, optional): The time range to query, default is 24 hours.
+        - date (bool, optional): Whether to return timestamps along with the data. Default is False.
+
+        Returns:
+        - dict: A dictionary containing lists of PM2.5, PM10, and PM1 values.
+        - dict: If date=True, returns a dictionary with dates and PM2.5, PM10, PM1 values.
+        """
+        query = (
+            "SELECT mean(\"pm25\") AS \"mean_pm25\", "
+            "mean(\"pm10\") AS \"mean_pm10\", "
+            "mean(\"pm1\") AS \"mean_pm1\" "
+            "FROM \"fixed_stations_01\" "
+            f"WHERE \"name\" = '{name}' AND time >= now() - {time} "
+            "GROUP BY time(30s) fill(null) "
+            "ORDER BY time ASC"
+        )
+        if date:
+            result = self.client.query(query)
+            pm25=[]
+            pm10=[]
+            pm1=[]
+            date=[]
+            for value in result.get_points():
+                if value["mean_pm25"]!=None:
+                    pm25.append(value["mean_pm25"])
+                if value["mean_pm10"]!=None:
+                    pm10.append(value["mean_pm10"])
+                if value["mean_pm1"]!=None:
+                    pm1.append(value["mean_pm1"])  
+                if value["time"]!=None:
+                    date.append(value["time"])  
+            return {"dates":date,"pm25":pm25,"pm10":pm10,"pm1":pm1}
+        else:
+            result = self.client.query(query)
+            pm25=[]
+            pm10=[]
+            pm1=[]
+            date=[]
+            for value in result.get_points():
+                if value["mean_pm25"]!=None:
+                    pm25.append(value["mean_pm25"])
+                if value["mean_pm10"]!=None:
+                    pm10.append(value["mean_pm10"])
+                if value["mean_pm1"]!=None:
+                    pm1.append(value["mean_pm1"])            
+            return {"pm25":pm25,"pm10":pm10,"pm1":pm1}
+
     def coordinates(self, name):
         """
         Retrieves the geohash coordinates of a station from the database.
