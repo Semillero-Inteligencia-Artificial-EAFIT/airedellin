@@ -137,6 +137,8 @@ Join us in improving Medellín’s air quality for everyone. 🚀🌱
 
 - **Paris Data**: The data used for Paris sensors is not real; it's for testing purposes.
 - **Techincal Notes**: [Here](https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/technical_documentation_en.md)
+- **Useful data**: [hugging face](https://huggingface.co/datasets/jero98772/Pm25medellin) 
+
 ### We want to
 
 - [X] Heatmap
@@ -146,8 +148,8 @@ Join us in improving Medellín’s air quality for everyone. 🚀🌱
 - [X] Create dashboard for each sensor
 - [X] Donations dummy system
 - [X] Stadistical panel of pm2.5
+- [X] Real location of sensors
 - [ ] Hexgon map like in [https://sensor.community/es/](https://sensor.community/es/)
 - [ ] change the time when the sensor take data for better predictions , predict not from 30 sec to 30 sec. for 1 day to another day 
-- [ ] Real location of sensors
 - [ ] Waze for pm2.5
 - [ ] Web with layers for predict pm2.5 in a anothermap
