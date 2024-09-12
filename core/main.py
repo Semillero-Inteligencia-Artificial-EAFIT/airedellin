@@ -183,9 +183,13 @@ async def post_mlalgorithm(
 ):  
     # Offload sensor data fetching to a separate thread
     def fetch_sensor_data(sensor_name):
-        pm25, dates = sensors.data(sensor_name, date=True)
-        data = [int(value) for value in pm25 if value is not None]
-        return data, dates
+        data=sensors.data_complate_particules(sensor_name,date=True)
+        print(data)
+        pm25=data["pm25"]
+        #pm10=data["pm10"]
+        #pm1=data["pm1"]
+        dates=data["dates"]
+        return pm25, dates
 
     # Run fetch_sensor_data asynchronously
     data_future = executor.submit(fetch_sensor_data, sensor_name)

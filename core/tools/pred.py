@@ -536,22 +536,16 @@ def LSTM(y, num_pred=num_pred):
     return predictions.tolist(),mse
 
 
-def TCN(y, num_pred=num_pred):
+def TCN(y, num_pred=100):
     """
-    underconstruccion
+    TCN model for PM2.5 prediction using TensorFlow
     """
     y = np.array(y)
     if y.size == 0:
         return 0, "Error"
 
-    y = torch.tensor(y, dtype=torch.float32)
-
-    # Create a tensor for X (in this case, range values)
-    X = torch.tensor(np.arange(len(y)), dtype=torch.float32)
-    X = X.unsqueeze(1)  
-
-    #print("X shape:", X.shape)
-    #print("y shape:", y.shape)
+    # Create input data
+    X = np.arange(len(y)).reshape(-1, 1)
 
     # Define sequence length and create sequences
     seq_len = 100
@@ -562,94 +556,63 @@ def TCN(y, num_pred=num_pred):
         X_seq.append(X[i:i+seq_len])
         y_seq.append(y[i+seq_len])
 
-    X_seq = torch.stack(X_seq)
-    y_seq = torch.stack(y_seq)
+    X_seq = np.array(X_seq)
+    y_seq = np.array(y_seq)
 
-    #print("X_seq shape:", X_seq.shape)
-    #print("y_seq shape:", y_seq.shape)
-
-    # Create dataset and dataloader
-    dataset = TensorDataset(X_seq, y_seq)
+    # Create dataset
+    dataset = tf.data.Dataset.from_tensor_slices((X_seq, y_seq))
     batch_size = 32
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    dataset = dataset.shuffle(buffer_size=1000).batch(batch_size)
 
     # TCN model
-    class TCN(nn.Module):
-        def __init__(self, input_size, output_size, num_channels, kernel_size, dropout):
-            super(TCN, self).__init__()
-            layers = []
-            num_levels = len(num_channels)
-            for i in range(num_levels):
-                dilation_size = 2 ** i
-                in_channels = input_size if i == 0 else num_channels[i-1]
-                out_channels = num_channels[i]
-                layers += [nn.Conv1d(in_channels, out_channels, kernel_size,
-                                     padding=(kernel_size-1) * dilation_size,
-                                     dilation=dilation_size),
-                           nn.ReLU(),
-                           nn.Dropout(dropout)]
-            self.network = nn.Sequential(*layers)
-            self.linear = nn.Linear(num_channels[-1], output_size)
+    def create_tcn_model(input_shape, output_size, num_channels, kernel_size, dropout):
+        inputs = layers.Input(shape=input_shape)
+        x = inputs
 
-        def forward(self, x):
-            x = x.transpose(1, 2)  # Change shape from [batch, seq_len, features] to [batch, features, seq_len]
-            x = self.network(x)
-            return self.linear(x[:, :, -1])
+        for i in range(len(num_channels)):
+            dilation_rate = 2 ** i
+            x = layers.Conv1D(filters=num_channels[i], kernel_size=kernel_size,
+                              padding='causal', dilation_rate=dilation_rate)(x)
+            x = layers.Activation('relu')(x)
+            x = layers.Dropout(dropout)(x)
+
+        x = layers.GlobalAveragePooling1D()(x)
+        outputs = layers.Dense(output_size)(x)
+
+        model = models.Model(inputs=inputs, outputs=outputs)
+        return model
 
     # Model and training
-    input_size = 1  # Single feature (time index)
-    output_size = 1  # Predicting a single value (pm25)
+    input_shape = (seq_len, 1)  # [seq_len, features]
+    output_size = 1  # Predicting a single value (PM2.5)
     num_channels = [32, 32, 32, 32]  # Adjust as needed
     kernel_size = 3
     dropout = 0.2
 
-    model = TCN(input_size, output_size, num_channels, kernel_size, dropout)
-    criterion = nn.MSELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    model = create_tcn_model(input_shape, output_size, num_channels, kernel_size, dropout)
+    model.compile(optimizer=Adam(learning_rate=0.001), loss='mse')
 
     num_epochs = 2
-    for epoch in range(num_epochs):
-        model.train()
-        total_loss = 0
-        for X_batch, y_batch in dataloader:
-            optimizer.zero_grad()
-            output = model(X_batch)
-            loss = criterion(output.squeeze(), y_batch)
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item()
-        
-        avg_loss = total_loss / len(dataloader)
-        print(f"Epoch {epoch+1}/{num_epochs}, Loss: {avg_loss:.4f}")
+    history = model.fit(dataset, epochs=num_epochs, verbose=1)
 
-    # Save the model
-    #torch.save(model.state_dict(), 'tcn_model.pth')
-
-    # Load the model
-    #model.load_state_dict(torch.load('tcn_model.pth'))
-    model.eval()
     # Initialize a list to store the predicted values
     predicted_values = []
 
     # Use the model to predict the next values
-    with torch.no_grad():
-        # Get the last sequence from the data
-        x_last = X_seq[-1].unsqueeze(0)
+    x_last = X_seq[-1].reshape(1, seq_len, 1)
+    
+    for _ in range(num_pred):
+        # Predict the next value
+        y_pred = model.predict(x_last)
         
-        for _ in range(num_pred):
-            # Predict the next value
-            y_pred = model(x_last)
-            
-            # Append the predicted value to the list
-            predicted_values.append(y_pred.item())
-            
-            # Update the sequence with the predicted value
-            # Assuming the input shape for the model is [batch_size, sequence_length, features]
-            # and you need to update the sequence by removing the oldest value and adding the new one
-            y_pred = y_pred.unsqueeze(1)  # This will make y_pred 3D if it starts as 2D.
-            x_last = torch.cat((x_last[:, 1:, :], y_pred), dim=1)
+        # Append the predicted value to the list
+        predicted_values.append(y_pred[0][0])
+        
+        # Update the sequence with the predicted value
+        x_last = np.roll(x_last, -1, axis=1)
+        x_last[0, -1, 0] = y_pred[0][0]
 
+    print("Predicted PM2.5 values for the next 100 time steps:", predicted_values)
+    
+    return predicted_values, model.loss
 
-        print("Predicted PM2.5 values for the next 100 time steps:", predicted_values)
-    #mse = mean_squared_error(validation_data, predicted_values)
-    return predicted_values,criterion

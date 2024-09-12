@@ -84,8 +84,9 @@ class Sensors:
                     pm10.append(value["mean_pm10"])
                 if value["mean_pm1"]!=None:
                     pm1.append(value["mean_pm1"])  
-
-            return {"date":date,"pm25":pm25,"pm10":pm10,"pm1":pm1}
+                if value["time"]!=None:
+                    date.append(value["time"])  
+            return {"dates":date,"pm25":pm25,"pm10":pm10,"pm1":pm1}
         else:
             result = self.client.query(query)
             pm25=[]
