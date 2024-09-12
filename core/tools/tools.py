@@ -5,29 +5,69 @@ import datetime
 import numpy as np
 
 def writetxt(name,content,mode="w"):
-  """
-  writetxt(name,content) , write in txt file something  
-  """
-  content=str(content)
-  with open(name, mode) as file:
-    file.write(content)
-    file.close()
+    """
+    Write content to a text file.
 
+    Parameters:
+    name (str): The name of the file to write to.
+    content (str or any): The content to be written. It will be converted to a string if necessary.
+    mode (str, optional): The mode in which to open the file (default is "w" for writing).
 
+    Returns:
+    None
+    """
+    content=str(content)
+    with open(name, mode) as file:
+        file.write(content)
+        file.close()
 
 def nullValue(val,newval="-"):
+    """
+    Check if the value is null or empty and return a replacement value.
+
+    Parameters:
+    val (any): The value to check.
+    newval (any, optional): The replacement value to return if val is null or empty (default is "-").
+
+    Returns:
+    any: newval if val is null or empty, otherwise returns val.
+    """
     if not val or val=="":
         return newval 
 
 def now():
-  now = str(datetime.datetime.today().strftime("%m/%d/%Y, %H:%M"))
-  return now
+    """
+    Get the current date and time in a specific format.
+
+    Returns:
+    str: The current date and time formatted as 'MM/DD/YYYY, HH:MM'.
+    """
+    now = str(datetime.datetime.today().strftime("%m/%d/%Y, %H:%M"))
+    return now
 
 def readtxtline(name):
-  with open(name, 'r') as file:
-    return str(file.readline())
+    """
+    Read the first line from a text file.
+
+    Parameters:
+    name (str): The name of the file to read from.
+
+    Returns:
+    str: The first line of the file as a string.
+    """
+    with open(name, 'r') as file:
+        return str(file.readline())
 
 def divide_data(result_set):
+    """
+    Divide the result set into separate lists for dates and PM2.5 values.
+
+    Parameters:
+    result_set (dict): A dictionary containing the result set with keys 'time' and 'data'.
+
+    Returns:
+    tuple: A tuple containing two lists: dates and pm25_values.
+    """
     # Initialize empty lists for dates and pm2.5 values
     dates = []
     pm25_values = []
@@ -43,6 +83,17 @@ def divide_data(result_set):
     return dates, pm25_values
 
 def statistics_extractor(data):
+    """
+    Extract statistics from a list of data points, including mean, variance, standard deviation, skewness, and kurtosis.
+    i have to make this function because some tutorials of code use something very ineficient like:
+    https://pastebin.com/HjgBFZKT this improve the performance x10 with this 
+    
+    Parameters:
+    data (list): A list of numerical data points.
+
+    Returns:
+    dict: A dictionary containing statistical values such as mean, variance, standard deviation, kurtosis, skewness, etc.
+    """
     new_data=[]
     if not data:
         return None
@@ -112,6 +163,16 @@ def statistics_extractor(data):
     }
 
 def range_option_function(range_option):
+    """
+    Determine the appropriate time range based on the input option.
+    i did it here because for not fill post_sensor with Trash code 
+
+    Parameters:
+    range_option (str): A string representing the time range option ("1w", "1m", "1y").
+
+    Returns:
+    str: The corresponding time range in days, weeks, or hours.
+    """
     if range_option == "1w":
         time_range = "7d"
     elif range_option == "1m":

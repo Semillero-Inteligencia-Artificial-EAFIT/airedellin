@@ -443,9 +443,6 @@ def LSTM(y, num_pred=num_pred):
     Raises:
     ValueError: If the input array `y` is empty or if the dataset is too small to model.
     """
-
-
-
     y = np.array(y)
     if y.size == 0:
         return 0, "Error"

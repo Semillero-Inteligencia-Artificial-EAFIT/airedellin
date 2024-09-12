@@ -106,6 +106,7 @@ Follow these steps to get started with Airedellín:
         ```
 
     - Add your Maptiler token in `data/token.txt`.
+     you can get a token from [https://docs.maptiler.com/cloud/api](https://docs.maptiler.com/cloud/api)
 
 3. **Start the application**:
 
