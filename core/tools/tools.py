@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-"
-#airellin - by jero98772
+#airellin - by MLeafit
 import datetime
 import numpy as np
+
 def writetxt(name,content,mode="w"):
   """
   writetxt(name,content) , write in txt file something  

@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-"
+#airellin - by MLeafit
+
 from influxdb import InfluxDBClient
 import random
 import pygeohash as pgh
@@ -20,28 +24,51 @@ def generate_random_coordinates(x_range=(-80, 80), y_range=(-60, 60)):
 
 
 class Sensors:
+    """
+    A class to interact with an InfluxDB instance and retrieve sensor data from fixed stations.
+
+    Attributes:
+    - client (InfluxDBClient): The client object for interacting with the InfluxDB.
+    - db (str): The database name.
+    - table (str): The table to query data from.
+    """
     def __init__(self, db, host, port=8086):
+        """
+        Initializes the Sensors object with a database, host, and port.
+
+        Parameters:
+        - db (str): The name of the database to connect to.
+        - host (str): The hostname of the InfluxDB server.
+        - port (int, optional): The port number to connect to. Default is 8086.
+        """
         self.client = InfluxDBClient(host=host, port=port, database=db)
         self.db = db
         self.table="fixed_stations_01"
 
     def names(self):
+        """
+        Retrieves a list of distinct station names from the database within the last 7 days(because i wanna plot active sensors).
+
+        Returns:
+        - list: A list of distinct station names.
+        """
         query = 'SELECT DISTINCT("name") FROM "fixed_stations_01" WHERE time > now() - 7d'
         result = self.client.query(query)
         return [item['distinct'] for item in result.get_points()]
-#    def names(self):
-        """
-        Retrieves all measurement names from the specified InfluxDB database.
 
-        :return: List of measurement names as strings.
+    async def data(self, name,time="24h",date=False):
         """
+        Retrieves PM2.5 data for a specific station within the specified time range.
+
+        Parameters:
+        - name (str): The name of the station to query.
+        - time (str, optional): The time range to query, default is 24 hours.
+        - date (bool, optional): Whether to return timestamps along with the data. Default is False.
+
+        Returns:
+        - list: A list of PM2.5 values.
+        - tuple (list, list): If date=True, returns two lists: one for PM2.5 values and another for timestamps.
         """
-        query = f'SHOW MEASUREMENTS ON "{self.db}"'
-        result = self.client.query(query)
-        names = [item['name'] for item in result.get_points()]
-        return names
-        """
-    def data(self, name,time="24h",date=False):
         query = (
             "SELECT mean(\"pm25\") AS \"data\" FROM \"fixed_stations_01\" "
             f"WHERE \"name\" = '{name}' AND time >= now() - {time} "
@@ -58,9 +85,48 @@ class Sensors:
         else:
             result = self.client.query(query)
             return [value["data"] for value in result.get_points()]
-    def data_complate_particules(self, name,time="24h",date=False):
+    def data(self, name,time="24h",date=False):
         """
-        To test
+        Retrieves PM2.5 data for a specific station within the specified time range.
+
+        Parameters:
+        - name (str): The name of the station to query.
+        - time (str, optional): The time range to query, default is 24 hours.
+        - date (bool, optional): Whether to return timestamps along with the data. Default is False.
+
+        Returns:
+        - list: A list of PM2.5 values.
+        - tuple (list, list): If date=True, returns two lists: one for PM2.5 values and another for timestamps.
+        """
+        query = (
+            "SELECT mean(\"pm25\") AS \"data\" FROM \"fixed_stations_01\" "
+            f"WHERE \"name\" = '{name}' AND time >= now() - {time} "
+            "GROUP BY time(30s) fill(null) ORDER BY time ASC"
+        )
+        if date:
+            result = self.client.query(query)
+            pm25=[]
+            date=[]
+            for value in result.get_points():
+                date.append(value["time"])
+                pm25.append(value["data"])
+            return pm25,date
+        else:
+            result = self.client.query(query)
+            return [value["data"] for value in result.get_points()]
+
+    async def data_complate_particules(self, name,time="24h",date=False):
+        """
+        Retrieves PM2.5, PM10, and PM1 data for a specific station within the specified time range.
+
+        Parameters:
+        - name (str): The name of the station to query.
+        - time (str, optional): The time range to query, default is 24 hours.
+        - date (bool, optional): Whether to return timestamps along with the data. Default is False.
+
+        Returns:
+        - dict: A dictionary containing lists of PM2.5, PM10, and PM1 values.
+        - dict: If date=True, returns a dictionary with dates and PM2.5, PM10, PM1 values.
         """
         query = (
             "SELECT mean(\"pm25\") AS \"mean_pm25\", "
@@ -103,6 +169,16 @@ class Sensors:
             return {"pm25":pm25,"pm10":pm10,"pm1":pm1}
 
     def coordinates(self, name):
+        """
+        Retrieves the geohash coordinates of a station from the database.
+
+        Parameters:
+        - name (str): The name of the station to query.
+
+        Returns:
+        - tuple: A tuple containing the longitude and latitude coordinates of the station.
+        - (None, None): If no coordinates are found.
+        """
         query = (
             "SELECT last(\"geo\") AS \"geohash\""
             f" FROM \"fixed_stations_01\" WHERE \"name\" = '{name}' AND time > now() - 1d"
@@ -115,7 +191,16 @@ class Sensors:
         return None,None
 
 
-    def station_data(self, name):
+    async def station_data(self, name):
+        """
+        Retrieves the station's name, coordinates, and PM2.5 data.
+
+        Parameters:
+        - name (str): The name of the station to retrieve data for.
+
+        Returns:
+        - dict: A dictionary containing the station name, coordinates, and PM2.5 data.
+        """
         coords = self.coordinates(name)
         pm25_data = self.data(name)
         return {
@@ -123,7 +208,17 @@ class Sensors:
             "coordinates": coords,
             "pm25_data": pm25_data
         }
+
     async def get_formatted_data(self, size=50):
+        """
+        Asynchronously retrieves formatted data from stations, including name, PM2.5 data, and coordinates.
+
+        Parameters:
+        - size (int, optional): Number of stations to process. Default is 50.
+
+        Returns:
+        - list: A list of GeoJSON feature dictionaries containing the station name, PM2.5 value, and coordinates.
+        """
         features = []
         
         for name in self.names():  # Iterate over sensor names
