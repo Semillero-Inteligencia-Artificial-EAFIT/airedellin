@@ -25,6 +25,8 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras import layers, models
+from tensorflow.keras.optimizers import Adam
 
 import torch
 import torch.nn as nn
@@ -612,7 +614,6 @@ def TCN(y, num_pred=100):
         x_last = np.roll(x_last, -1, axis=1)
         x_last[0, -1, 0] = y_pred[0][0]
 
-    print("Predicted PM2.5 values for the next 100 time steps:", predicted_values)
+    #print("Predicted PM2.5 values for the next 100 time steps:", predicted_values)
     
     return predicted_values, model.loss
-

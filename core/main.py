@@ -64,6 +64,7 @@ async def shutdown_event():
     for task in asyncio.all_tasks():
         task.cancel()
 
+
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     data = [
@@ -157,7 +158,14 @@ async def statistics(request: Request, sensor_name: str):
 
 @app.get("/sensor{sensor_name}/predictions", response_class=HTMLResponse)
 async def get_mlalgorithm(request: Request, sensor_name: str):
-    data = sensors.data(sensor_name)
+    def get_sensor_data(sensor_name):
+        data = sensors.data(sensor_name)
+        return [int(value) for value in data if value is not None]
+
+    # Run get_sensor_data in a separate thread
+    data_future = executor.submit(get_sensor_data, sensor_name)
+    data = data_future.result()
+    #data = sensors.data(sensor_name)
     data = [int(value) for value in data if (value is not None and 0<value<1024)]
     return templates.TemplateResponse("ml_algorithms.html", {
         "request": request,
