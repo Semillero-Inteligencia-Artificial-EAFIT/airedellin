@@ -1,8 +1,6 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-"
-"""
-airedellin - 2024 - by MLEAFIT
-"""
+#airellin - by MLeafit
 
 from core.main import *
 from core.main import app

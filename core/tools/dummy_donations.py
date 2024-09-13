@@ -4,14 +4,50 @@
 import json
 import os
 def load_data(data_file):
-    """Load data from the file."""
+    """
+    Load data from a JSON file if it exists.
+    
+    Args:
+        data_file (str): The path to the JSON file that contains data.
+
+    Returns:
+        dict: A dictionary containing keys 'images', 'accounts', 'entities', and 'sensors'.
+        If the file does not exist, it returns an empty structure with those keys and empty lists.
+    """
     if os.path.exists(data_file):
         with open(data_file, 'r') as file:
             return json.load(file)
     return {"images": [], "accounts": [], "entities": [], "sensors": []}
 
 def retrieve_data_for_sensor(sensor_name,data):
-    """Retrieve associated data based on the sensor name."""
+    """
+    Retrieve data associated with a sensor by its name.
+
+    Args:
+        sensor_name (str): The name of the sensor to look up in the data.
+        data (dict): A dictionary containing 'sensors', 'entities', 'accounts', and 'images' lists.
+
+    Returns:
+        dict: A dictionary containing the sensor name, its associated entity, account, and image.
+        If the sensor is not found, returns a placeholder dictionary with a message for donation.
+
+    Example:
+        If the sensor exists:
+        {
+            "sensor": "sensor_name",
+            "entity": "corresponding_entity",
+            "account": "corresponding_account",
+            "image": "corresponding_image_url"
+        }
+
+        If the sensor does not exist:
+        {
+            "sensor": "not found",
+            "entity": "you can add your sensor for donations",
+            "account": "go to <a href='/add_donation'>add donation</a>",
+            "image": "https://via.placeholder.com/150"
+        }
+    """
     if sensor_name not in data['sensors']:
         print(f"Sensor {sensor_name} not found.")
         associated_data = {
