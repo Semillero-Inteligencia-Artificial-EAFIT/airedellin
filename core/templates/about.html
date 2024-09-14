@@ -1,135 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airedellín 🌿 | Improving Medellín's Air Quality</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/landing_page.css">
-    <link rel="icon" href="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/logo.png"/>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-        }
-
-        /* Hero section */
-        .hero {
-            background: url('https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/1.png') no-repeat center center/cover;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-align: center;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: bold;
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-        }
-
-        .hero .btn {
-            margin-top: 20px;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            background-color: #28a745;
-            border: none;
-            color: white;
-            border-radius: 5px;
-        }
-
-        .hero .btn:hover {
-            background-color: #218838;
-        }
-
-        /* About section */
-        .about {
-            padding: 50px 20px;
-            background-color: #f8f9fa;
-            text-align: center;
-        }
-
-        .about h2 {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-        }
-
-        .about p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* Features section */
-        .features {
-            padding: 50px 20px;
-            text-align: center;
-        }
-
-        .features h2 {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-        }
-
-        .features .card {
-            margin: 20px 0;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .features .card img {
-            height: 200px;
-            object-fit: cover;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-
-        .features .card-body {
-            padding: 20px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #343a40;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        footer a {
-            color: #28a745;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.2rem;
-            }
-
-            .about h2, .features h2 {
-                font-size: 2rem;
-            }
-        }
-    </style>
-</head>
-
-<body>
+{% block content %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -190,7 +64,7 @@
             </div>
         </div>
     </section>
-
+<h2>Empower Your Canairio Sensor: <a href="/add_donation">Link it to a Bank or Crypto Wallet and Start Receiving Donations Today!</a></h2>
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 Airedellín. All rights reserved. | <a href="https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin">GitHub Repository</a></p>
@@ -201,10 +75,4 @@
             <a href="https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/readme_ru.md">Русский</a>
         </p>
     </footer>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+{% endblock %}

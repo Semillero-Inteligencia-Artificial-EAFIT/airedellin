@@ -216,9 +216,21 @@ async def post_mlalgorithm(
     })
 
 
-@app.get("/index", response_class=HTMLResponse)
-async def landing_page(request: Request):
-    return templates.TemplateResponse("landing_page.html", {
+@app.get("/about", response_class=HTMLResponse)
+async def about(request: Request):
+    return templates.TemplateResponse("about.html", {
+        "request": request
+    })
+
+@app.get("/predictword", response_class=HTMLResponse)
+async def predictword(request: Request):
+    return templates.TemplateResponse("predictword.html", {
+        "request": request
+    })
+
+@app.get("/route", response_class=HTMLResponse)
+async def route(request: Request):
+    return templates.TemplateResponse("route.html", {
         "request": request
     })
 
