@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work in Progress</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lora', serif;
+            background: #e6f0fa;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            padding: 50px;
+        }
+        .message {
+            background: rgba(91, 125, 177, 0.6); /* Blue tint with transparency */
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+    </style>
+    <div class="container">
+        <div class="message">
+            <h1>We’re Working Here!</h1>
+            <p>Our team is currently making updates and improvements. Please check back soon for new features and updates.</p>
+        </div>
+    </div>
+{% endblock %}

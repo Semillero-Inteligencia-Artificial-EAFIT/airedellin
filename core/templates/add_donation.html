@@ -1,42 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airedellin</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/landing_page.css">
+{% extends 'base.html' %}
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="/static/js/add_donation.js" type="text/javascript" defer>></script>
-    <link rel="stylesheet" type="text/css" href="/static/css/add_donation.css">
-    <link rel="icon" href="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/logo.png"/>
-</head>
-<body>
-
-    <!-- JavaScript for Image Preview -->
-    <script>
-
-    </script>
-
-    <!-- Watercolor Background -->
-    <div class="watercolor-bg"></div>
-
-    <!-- Header -->
-    <header>
-        <h1>Airedellin</h1>
-        <nav>
-            <a href="/index#air-quality">Air Quality</a>
-            <a href="/index#about">About</a>
-            <a href="/index#services">Services</a>
-            <a href="/index#login-register">Login/Register</a>
-        </nav>
-    </header>
+{% block content %}
 
     <!-- Data Entry Form Section -->
     <section id="data-entry" class="data-entry">
@@ -73,12 +37,5 @@
             </form>
         </div>
     </section>
-    <p> as a note we are thinking to move to <a href="https://nostr.com/">nostr</a> </p>
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 Airedellin. All rights reserved.</p>
-    </footer>
-
-
-</body>
-</html>
+    <p> as a note we are thinking to move to <a href="https://nostr.com/">nostr</a> and maybe this not work </p>
+{% endblock %}
