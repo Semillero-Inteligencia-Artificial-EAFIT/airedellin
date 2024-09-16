@@ -423,9 +423,6 @@ def exponential_smoothing(y, num_pred=num_pred):
 
     return future_pred.tolist(), r2
 
-
-
-
 def LSTM(y, num_pred=num_pred):
     """
     Train a RNN with LSTM to time series data and predict future values.
@@ -535,7 +532,7 @@ def LSTM(y, num_pred=num_pred):
     return predictions.tolist(),mse
 
 
-def TCN(y, num_pred=100):
+def TCN(y, num_pred=num_pred):
     """
     TCN model for PM2.5 prediction using TensorFlow
     """
@@ -614,3 +611,57 @@ def TCN(y, num_pred=100):
     #print("Predicted PM2.5 values for the next 100 time steps:", predicted_values)
     
     return predicted_values, model.loss
+
+def prophet_forecast(y, num_pred=num_pred):
+    from prophet import Prophet
+    """
+    Fit a Prophet model to the time series data and forecast future values.
+    
+    Parameters:
+    y (array-like): The input time series data.
+    num_pred (int): The number of future time steps to predict. Default is 100.
+    
+    Returns:
+    tuple: A tuple containing:
+        - list: Forecasted values of the time series.
+        - float: Mean squared error of the model on the test set.
+    
+    Raises:
+    ValueError: If the input array `y` is empty or too small to split.
+    """
+    
+    # Check if the input is empty
+    if len(y) == 0:
+        raise ValueError("The input array y is empty.")
+    
+    # Prepare the dataframe with time and values for Prophet
+    df = pd.DataFrame({
+        'ds': pd.date_range(start='2020-01-01', periods=len(y), freq='D'),  # Create a date range for `ds`
+        'y': y  # Target variable
+    })
+    
+    # Split the data into training and test sets
+    train_data, test_data = train_test_split(df, test_size=0.2, shuffle=False)
+    
+    # Initialize the Prophet model
+    model = Prophet()
+    
+    # Fit the model on the training data
+    model.fit(train_data)
+    
+    # Generate a dataframe to hold future dates for prediction
+    future = model.make_future_dataframe(periods=num_pred)
+    
+    # Predict future values
+    forecast = model.predict(future)
+    
+    # Extract forecasted values
+    forecast_values = forecast['yhat'].iloc[-num_pred:].values
+    
+    # Predict on the test set to calculate MSE
+    test_predictions = model.predict(test_data[['ds']])
+    
+    # Compute Mean Squared Error between test set and test predictions
+    mse = mean_squared_error(test_data['y'], test_predictions['yhat'])
+    
+    return list(forecast_values), float(mse)
