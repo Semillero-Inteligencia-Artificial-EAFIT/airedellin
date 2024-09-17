@@ -17,7 +17,7 @@ import asyncio
 
 from .tools.dummy_donations import load_data,retrieve_data_for_sensor
 from .tools.dataTool import Sensors
-from .tools.pred import linear_regresion,arima,random_forest,sarima,lasso,xgboost,exponential_smoothing, LSTM, Poly_regresion_with_lag,TCN,prophet_forecast
+from .tools.pred import *
 
 from .tools.tools import *
 
@@ -31,7 +31,7 @@ host = "influxdb.canair.io"
 sensors = Sensors("canairio", host)
 templates = Jinja2Templates(directory="core/templates")
 
-algorithm_names = ["originalData","linearRegression", "Arima", "randomForest","Sarima","Lasso","Xgboost","ExponentialSmoothing","LSTM","polyRegresion","temporalConvolutionalNetwork","Prophet"]
+algorithm_names = ["originalData","linearRegression", "Arima", "randomForest","Sarima","Lasso","Xgboost","ExponentialSmoothing","LSTM","polyRegresion","temporalConvolutionalNetwork","RNN","Prophet"]
 algorithm_map = {
     "linearRegression": linear_regresion,
     "Arima": arima,
@@ -44,6 +44,7 @@ algorithm_map = {
     "polyRegresion":Poly_regresion_with_lag,
     "temporalConvolutionalNetwork":TCN,
     "Prophet":prophet_forecast,
+    "RNN":RNN,
 }
 
 formatted_data = []
