@@ -423,9 +423,6 @@ def exponential_smoothing(y, num_pred=num_pred):
 
     return future_pred.tolist(), r2
 
-
-
-
 def LSTM(y, num_pred=num_pred):
     """
     Train a RNN with LSTM to time series data and predict future values.
@@ -535,9 +532,18 @@ def LSTM(y, num_pred=num_pred):
     return predictions.tolist(),mse
 
 
-def TCN(y, num_pred=100):
+def TCN(y, num_pred=num_pred):
     """
-    TCN model for PM2.5 prediction using TensorFlow
+    Train a Temporal Convolutional Network (TCN) for time series prediction using TensorFlow.
+
+    Args:
+        y (list or np.ndarray): Time series data to train the TCN model.
+        num_pred (int, optional): Number of future values to predict. Default is 100.
+
+    Returns:
+        tuple: A tuple containing:
+            - List of predicted values for the next `num_pred` time steps.
+            - Loss value of the trained model.
     """
     y = np.array(y)
     if y.size == 0:
@@ -612,5 +618,141 @@ def TCN(y, num_pred=100):
         x_last[0, -1, 0] = y_pred[0][0]
 
     #print("Predicted PM2.5 values for the next 100 time steps:", predicted_values)
-    
     return predicted_values, model.loss
+    
+def RNN(y, num_pred=100):
+    """
+    Train a Recurrent Neural Network (RNN) for time series prediction using TensorFlow.
+
+    Args:
+        y (list or np.ndarray): Time series data to train the RNN model.
+        num_pred (int, optional): Number of future values to predict. Default is 100.
+
+    Returns:
+        tuple: A tuple containing:
+            - List of predicted values for the next `num_pred` time steps.
+            - Mean squared error (MSE) loss on the training dataset.
+    """
+    y = np.array(y)
+    if y.size == 0:
+        return 0, "Error"
+
+    # Create input data
+    X = np.arange(len(y)).reshape(-1, 1)
+
+    # Define sequence length and create sequences
+    seq_len = 100
+    X_seq = []
+    y_seq = []
+
+    for i in range(len(X) - seq_len):
+        X_seq.append(X[i:i+seq_len])
+        y_seq.append(y[i+seq_len])
+
+    X_seq = np.array(X_seq)
+    y_seq = np.array(y_seq)
+
+    # Create dataset
+    dataset = tf.data.Dataset.from_tensor_slices((X_seq, y_seq))
+    batch_size = 32
+    dataset = dataset.shuffle(buffer_size=1000).batch(batch_size)
+
+    # RNN model
+    def create_rnn_model(input_shape, output_size, units, dropout):
+        inputs = layers.Input(shape=input_shape)
+        x = layers.SimpleRNN(units, return_sequences=True)(inputs)
+        x = layers.Dropout(dropout)(x)
+        x = layers.SimpleRNN(units)(x)
+        x = layers.Dropout(dropout)(x)
+        outputs = layers.Dense(output_size)(x)
+
+        model = models.Model(inputs=inputs, outputs=outputs)
+        return model
+
+    # Model and training
+    input_shape = (seq_len, 1)  # [seq_len, features]
+    output_size = 1  # Predicting a single value
+    units = 50  # Number of RNN units
+    dropout = 0.2
+
+    model = create_rnn_model(input_shape, output_size, units, dropout)
+    model.compile(optimizer=Adam(learning_rate=0.001), loss='mse')
+
+    num_epochs = 2
+    history = model.fit(dataset, epochs=num_epochs, verbose=1)
+
+    # Initialize a list to store the predicted values
+    predicted_values = []
+
+    # Use the model to predict the next values
+    x_last = X_seq[-1].reshape(1, seq_len, 1)
+    
+    for _ in range(num_pred):
+        # Predict the next value
+        y_pred = model.predict(x_last)
+        
+        # Append the predicted value to the list
+        predicted_values.append(y_pred[0][0])
+        
+        # Update the sequence with the predicted value
+        x_last = np.roll(x_last, -1, axis=1)
+        x_last[0, -1, 0] = y_pred[0][0]
+
+    mse = model.evaluate(dataset, verbose=0)
+    
+    return predicted_values, mse
+
+
+def prophet_forecast(y, num_pred=num_pred):
+    from prophet import Prophet
+    """
+    Fit a Prophet model to the time series data and forecast future values.
+    
+    Parameters:
+    y (array-like): The input time series data.
+    num_pred (int): The number of future time steps to predict. Default is 100.
+    
+    Returns:
+    tuple: A tuple containing:
+        - list: Forecasted values of the time series.
+        - float: Mean squared error of the model on the test set.
+    
+    Raises:
+    ValueError: If the input array `y` is empty or too small to split.
+    """
+    
+    # Check if the input is empty
+    if len(y) == 0:
+        raise ValueError("The input array y is empty.")
+    
+    # Prepare the dataframe with time and values for Prophet
+    df = pd.DataFrame({
+        'ds': pd.date_range(start='2020-01-01', periods=len(y), freq='D'),  # Create a date range for `ds`
+        'y': y  # Target variable
+    })
+    
+    # Split the data into training and test sets
+    train_data, test_data = train_test_split(df, test_size=0.2, shuffle=False)
+    
+    # Initialize the Prophet model
+    model = Prophet()
+    
+    # Fit the model on the training data
+    model.fit(train_data)
+    
+    # Generate a dataframe to hold future dates for prediction
+    future = model.make_future_dataframe(periods=num_pred)
+    
+    # Predict future values
+    forecast = model.predict(future)
+    
+    # Extract forecasted values
+    forecast_values = forecast['yhat'].iloc[-num_pred:].values
+    
+    # Predict on the test set to calculate MSE
+    test_predictions = model.predict(test_data[['ds']])
+    
+    # Compute Mean Squared Error between test set and test predictions
+    mse = mean_squared_error(test_data['y'], test_predictions['yhat'])
+    
+    return list(forecast_values), float(mse)
