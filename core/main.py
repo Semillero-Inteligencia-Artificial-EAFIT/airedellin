@@ -75,6 +75,7 @@ async def shutdown_event():
 @app.get(webpage+"/predictword", response_class=HTMLResponse)
 async def predictword(request: Request):
     data=get_pm25_features(nasa_data)
+    print(data)
     return templates.TemplateResponse("predictword.html", {"request": request, "token": token, "data": data})
 
 @app.get(webpage+"/", response_class=HTMLResponse)

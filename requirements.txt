@@ -8,4 +8,5 @@ scikit-learn
 xgboost
 tensorflow
 pygeohash
+h3
 prophet

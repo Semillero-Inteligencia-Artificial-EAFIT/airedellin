@@ -58,8 +58,8 @@
       const map = new maplibregl.Map({
         container: 'map',
         style: `https://api.maptiler.com/maps/aquarelle/style.json?key=${MAPTILER_KEY}`,
-        center: [-122.4, 37.74],
-        zoom: 13.5,
+        center: [-75.74,6.5],
+        zoom: 3.5,
         pitch: 45,
         bearing: -17.6,
         antialias: true,
@@ -79,25 +79,35 @@
 
         const layer = new deck.H3ClusterLayer({
           id: 'H3ClusterLayer',
-          data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf.h3clusters.json',
+          //data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf.h3clusters.json',
+          data: sampleData.features,
           stroked: true,
+/*
           getHexagons: d => d.hexIds,
-          getFillColor: d => {
-            const pm25 = d.mean;
-            if (pm25 > 150) {
-              return colorPalette[5]; // Black
-            } else if (pm25 > 100) {
-              return colorPalette[4]; // Purple
-            } else if (pm25 > 55) {
-              return colorPalette[3]; // Red
-            } else if (pm25 > 35) {
-              return colorPalette[2]; // Orange
-            } else if (pm25 > 12) {
-              return colorPalette[1]; // Yellow
-            } else {
-              return colorPalette[0]; // Green
-            }
-          },
+          //data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf.h3clusters.json',
+          stroked: true,
+          //getHexagons: d => d.hexIds,
+
+*/
+
+          getHexagons: d => d.geometry.coordinates,
+        getFillColor: d => {
+          const pm25 = d.properties.pm25;
+          let alpha = 150;  // Adjust alpha value between 0 (transparent) and 255 (opaque)
+          if (pm25 > 150) {
+            return [...colorPalette[5], alpha]; // Black
+          } else if (pm25 > 100) {
+            return [...colorPalette[4], alpha]; // Purple
+          } else if (pm25 > 55) {
+            return [...colorPalette[3], alpha]; // Red
+          } else if (pm25 > 35) {
+            return [...colorPalette[2], alpha]; // Orange
+          } else if (pm25 > 12) {
+            return [...colorPalette[1], alpha]; // Yellow
+          } else {
+            return [...colorPalette[0], alpha]; // Green
+          }
+        },
           getLineColor: [255, 255, 255],
           lineWidthMinPixels: 2,
           pickable: true,
