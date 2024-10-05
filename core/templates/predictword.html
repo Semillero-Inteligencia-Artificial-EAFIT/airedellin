@@ -42,7 +42,7 @@
     </style>
   </head>
   <body>
-    <div id="map"></div>
+    <div id="map"> </div>
     <button id="toggle-button">Hide</button>
     <script>
       let overlay;
@@ -93,7 +93,7 @@
           getHexagons: d => d.geometry.coordinates,
         getFillColor: d => {
           const pm25 = d.properties.pm25;
-          let alpha = 150;  // Adjust alpha value between 0 (transparent) and 255 (opaque)
+          let alpha = 50;  // Adjust alpha value between 0 (transparent) and 255 (opaque)
           if (pm25 > 150) {
             return [...colorPalette[5], alpha]; // Black
           } else if (pm25 > 100) {
@@ -114,11 +114,10 @@
           onClick: ({object, x, y}) => {
             if (object) {
               const coords = map.unproject([x, y]);
-              const description = `Density: ${object.mean} PM2.5`;
 
               // Set popup content and position it on the map
               popup.setLngLat(coords)
-                .setHTML(`<h4>Air Quality Data</h4><p>${description}</p>`)
+                .setHTML(`<h4>Air Quality Data</h4><p>${object.properties.pm25}</p>`)
                 .addTo(map);
             }
           }
@@ -138,7 +137,6 @@
         const toggleButton = document.getElementById('toggle-button');
         toggleButton.addEventListener('click', () => {
           if (show) {
-            map.removeControl(overlay);
             toggleButton.innerText = 'Show';
             show = false;
           } else {

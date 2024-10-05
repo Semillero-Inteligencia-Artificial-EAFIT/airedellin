@@ -5,11 +5,10 @@
 from influxdb import InfluxDBClient
 import random
 import pygeohash as pgh
-import polars as pl
 import h3
+import polars as pl
 
-import h3
-import polars as pl
+
 
 def get_pm25_features(file_path: str, resolution: int = 3):
     """
