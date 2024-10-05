@@ -16,7 +16,7 @@ import random
 import asyncio
 
 from .tools.dummy_donations import load_data,retrieve_data_for_sensor
-from .tools.dataTool import Sensors
+from .tools.dataTool import Sensors,get_pm25_features
 from .tools.pred import *
 
 from .tools.tools import *
@@ -30,6 +30,8 @@ dummy_donations=load_data("data/dummy_donations.json")
 host = "influxdb.canair.io"
 sensors = Sensors("canairio", host)
 templates = Jinja2Templates(directory="core/templates")
+nasa_data="data/data_nasa.csv"
+
 
 algorithm_names = ["originalData","linearRegression", "Arima", "randomForest","Sarima","Lasso","Xgboost","ExponentialSmoothing","LSTM","polyRegresion","temporalConvolutionalNetwork","RNN","Prophet"]
 algorithm_map = {
@@ -70,6 +72,22 @@ async def shutdown_event():
     for task in asyncio.all_tasks():
         task.cancel()
 
+@app.get(webpage+"/predictword", response_class=HTMLResponse)
+async def predictword(request: Request):
+    data=get_pm25_features(nasa_data)
+    print(data)
+    return templates.TemplateResponse("predictword.html", {"request": request, "token": token, "data": data})
+
+@app.get(webpage+"/maphex{sensor_name}", response_class=HTMLResponse)
+async def maphex(request: Request, sensor_name: str):
+    data = sensors.data(sensor_name)
+    data = [int(value) for value in data if value is not None]
+    donations=retrieve_data_for_sensor(sensor_name,dummy_donations)
+    return templates.TemplateResponse("maphexhistory.html", {
+        "request": request,
+        "maphex": "",
+
+    })
 
 @app.get(webpage+"/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -230,11 +248,6 @@ async def about(request: Request):
         "request": request
     })
 
-@app.get(webpage+"/predictword", response_class=HTMLResponse)
-async def predictword(request: Request):
-    return templates.TemplateResponse("predictword.html", {
-        "request": request
-    })
 
 @app.get(webpage+"/route", response_class=HTMLResponse)
 async def route(request: Request):

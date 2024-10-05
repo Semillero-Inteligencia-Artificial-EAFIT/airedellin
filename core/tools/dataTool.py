@@ -5,6 +5,78 @@
 from influxdb import InfluxDBClient
 import random
 import pygeohash as pgh
+import h3
+import polars as pl
+
+
+
+def get_pm25_features(file_path: str, resolution: int = 3):
+    """
+    Reads a CSV file containing latitude, longitude, and PM2.5 data, groups the data by coordinates,
+    calculates the average PM2.5 for each group, and converts each group into a GeoJSON-style feature
+    with H3 hexagon IDs based on the geographic location.
+
+    Parameters:
+    ----------
+    file_path : str
+        The path to the CSV file containing columns 'lat', 'lon', and 'MERRA2_CNN_Surface_PM25'.
+    resolution : int, optional
+        The resolution level for the H3 hexagons, by default 7. Higher values create smaller hexagons.
+
+    Returns:
+    --------
+    List[dict]:
+        A list of GeoJSON-style features with properties for the mean PM2.5 and the H3 hexagon ID.
+    
+    Feature Format:
+    ---------------
+    {
+        "type": "Feature",
+        "properties": {
+            "name": "lat,lon",
+            "pm25": float,  # Mean PM2.5 value
+            "hexId": str    # H3 Hexagon ID based on the location
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [lon, lat]  # Longitude, Latitude
+        }
+    }
+    """
+    # Read the CSV file with Polars
+    df = pl.read_csv(file_path)
+
+    # Group by latitude and longitude, then calculate the mean PM2.5 for each group
+    grouped = df.group_by(["lat", "lon"]).agg([
+        pl.col("MERRA2_CNN_Surface_PM25").mean().alias("mean_pm25")
+    ])
+
+    # Convert each grouped result into the GeoJSON-style feature format
+    features = []
+
+    for row in grouped.rows():
+        lat, lon, mean_pm25 = row
+
+        # Create GeoJSON feature with coordinates and properties
+        hexId = h3.geo_to_h3(lat, lon, resolution)
+        feature = {
+            "type": "Feature",
+            "properties": {
+                "name": f"{lat},{lon}",
+                "pm25": float(mean_pm25)  # PM2.5 average
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [hexId]  # Valid coordinates (longitude, latitude)
+            }
+        }
+
+        # Convert coordinates to H3 hexId
+        #feature["properties"]["hexId"] = hexId  # Add H3 hexagon ID to the feature
+
+        features.append(feature)
+
+    return features
 
 
 def generate_random_coordinates(x_range=(-80, 80), y_range=(-60, 60)):

@@ -8,6 +8,7 @@ __pycache__/
 *.so
 
 /data/token.txt
+/data/data_nasa.csv
 
 # Distribution / packaging
 .Python

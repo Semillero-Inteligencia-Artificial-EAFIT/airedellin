@@ -1,33 +1,151 @@
-{% extends 'base.html' %}
-
-{% block content %}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work in Progress</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta property="og:description" content="visualizer and predict for pm2.5 of sensors canairio" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://unpkg.com/h3-js@3.7.1"></script>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css" />
+    <script src="https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/deck.gl@8.9.33/dist.min.js"></script>
+    <script src="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.umd.min.js"></script>
+    <link href="https://cdn.maptiler.com/maptiler-sdk-js/v2.0.3/maptiler-sdk.css" rel="stylesheet" />
+    <link rel="icon" href="https://raw.githubusercontent.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/main/docs/pictures/logo.png"/>
     <style>
-        body {
-            font-family: 'Lora', serif;
-            background: #e6f0fa;
-            color: #333;
-        }
-        .container {
-            text-align: center;
-            padding: 50px;
-        }
-        .message {
-            background: rgba(91, 125, 177, 0.6); /* Blue tint with transparency */
-            color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      html, body, #map {
+        height: 100%;
+      }
+      #toggle-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: rgb(130, 25, 191);
+        color: #f0ead6;
+        font-size: 1.2rem;
+        min-width: 70px;
+        border-radius: 5px;
+        border: none;
+        padding: 5px 10px;
+        transition: 0.3s;
+      }
+      #toggle-button:hover {
+        scale: 1.1;
+        box-shadow: 0 0 4px 4px gray;
+      }
+      .maplibregl-popup {
+        z-index: 2;
+      }
     </style>
-    <div class="container">
-        <div class="message">
-            <h1>We’re Working Here!</h1>
-            <p>Our team is currently making updates and improvements. Please check back soon for new features and updates.</p>
-        </div>
-    </div>
-{% endblock %}
+  </head>
+  <body>
+    <div id="map"> </div>
+    <button id="toggle-button">Hide</button>
+    <script>
+      let overlay;
+      let show = true;
+      let popup = new maplibregl.Popup({ closeButton: true, closeOnClick: false });
+      const MAPTILER_KEY = '{{ token }}';
+      const sampleData = {
+        type: 'FeatureCollection',
+        name: 'Airedellin',
+        crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+        features: {{ data|tojson|safe }},
+      };
+      const map = new maplibregl.Map({
+        container: 'map',
+        style: `https://api.maptiler.com/maps/aquarelle/style.json?key=${MAPTILER_KEY}`,
+        center: [-75.74,6.5],
+        zoom: 3.5,
+        pitch: 45,
+        bearing: -17.6,
+        antialias: true,
+      });
+
+      map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+      function initializeH3ClusterLayer() {
+        const colorPalette = [
+          [153, 255, 153],  // Pastel Green
+          [255, 255, 153],  // Pastel Yellow
+          [255, 204, 153],  // Pastel Orange
+          [255, 153, 153],  // Pastel Red
+          [204, 153, 204],  // Pastel Purple
+          [153, 153, 153]   // Pastel Gray (softened Black)
+        ];
+
+        const layer = new deck.H3ClusterLayer({
+          id: 'H3ClusterLayer',
+          //data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf.h3clusters.json',
+          data: sampleData.features,
+          stroked: true,
+/*
+          getHexagons: d => d.hexIds,
+          //data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/sf.h3clusters.json',
+          stroked: true,
+          //getHexagons: d => d.hexIds,
+
+*/
+
+          getHexagons: d => d.geometry.coordinates,
+        getFillColor: d => {
+          const pm25 = d.properties.pm25;
+          let alpha = 50;  // Adjust alpha value between 0 (transparent) and 255 (opaque)
+          if (pm25 > 150) {
+            return [...colorPalette[5], alpha]; // Black
+          } else if (pm25 > 100) {
+            return [...colorPalette[4], alpha]; // Purple
+          } else if (pm25 > 55) {
+            return [...colorPalette[3], alpha]; // Red
+          } else if (pm25 > 35) {
+            return [...colorPalette[2], alpha]; // Orange
+          } else if (pm25 > 12) {
+            return [...colorPalette[1], alpha]; // Yellow
+          } else {
+            return [...colorPalette[0], alpha]; // Green
+          }
+        },
+          getLineColor: [255, 255, 255],
+          lineWidthMinPixels: 2,
+          pickable: true,
+          onClick: ({object, x, y}) => {
+            if (object) {
+              const coords = map.unproject([x, y]);
+
+              // Set popup content and position it on the map
+              popup.setLngLat(coords)
+                .setHTML(`<h4>Air Quality Data</h4><p>${object.properties.pm25}</p>`)
+                .addTo(map);
+            }
+          }
+        });
+
+        overlay = new deck.MapboxOverlay({
+          layers: [layer],
+          getTooltip: ({object}) => object && `Density: ${object.mean}`
+        });
+
+        map.addControl(overlay);
+      }
+
+      map.on('load', () => {
+        initializeH3ClusterLayer();
+
+        const toggleButton = document.getElementById('toggle-button');
+        toggleButton.addEventListener('click', () => {
+          if (show) {
+            toggleButton.innerText = 'Show';
+            show = false;
+          } else {
+            initializeH3ClusterLayer();
+            toggleButton.innerText = 'Hide';
+            show = true;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
