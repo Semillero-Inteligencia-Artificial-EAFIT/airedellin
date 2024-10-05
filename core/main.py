@@ -16,7 +16,7 @@ import random
 import asyncio
 
 from .tools.dummy_donations import load_data,retrieve_data_for_sensor
-from .tools.dataTool import Sensors
+from .tools.dataTool import Sensors,get_pm25_features
 from .tools.pred import *
 
 from .tools.tools import *
@@ -30,6 +30,8 @@ dummy_donations=load_data("data/dummy_donations.json")
 host = "influxdb.canair.io"
 sensors = Sensors("canairio", host)
 templates = Jinja2Templates(directory="core/templates")
+nasa_data="data/data_nasa.csv"
+
 
 algorithm_names = ["originalData","linearRegression", "Arima", "randomForest","Sarima","Lasso","Xgboost","ExponentialSmoothing","LSTM","polyRegresion","temporalConvolutionalNetwork","RNN","Prophet"]
 algorithm_map = {
@@ -72,6 +74,7 @@ async def shutdown_event():
 
 @app.get(webpage+"/predictword", response_class=HTMLResponse)
 async def predictword(request: Request):
+    data=get_pm25_features(nasa_data)
     return templates.TemplateResponse("predictword.html", {"request": request, "token": token, "data": data})
 
 @app.get(webpage+"/", response_class=HTMLResponse)

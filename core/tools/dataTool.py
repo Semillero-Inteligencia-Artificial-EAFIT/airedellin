@@ -5,8 +5,38 @@
 from influxdb import InfluxDBClient
 import random
 import pygeohash as pgh
+import polars as pl
 
+def get_pm25_features(file_path: str):
+    # Read the CSV file with Polars
+    df = pl.read_csv(file_path)
 
+    # Group by lat and lon and calculate the mean PM2.5
+    grouped = df.group_by(["lat", "lon"]).agg([
+        pl.col("MERRA2_CNN_Surface_PM25").mean().alias("mean_pm25")
+    ])
+
+    # Convert each grouped result to the desired feature format
+    features = []
+
+    for row in grouped.rows():
+        lat, lon, mean_pm25 = row
+
+        feature = {
+            "type": "Feature",
+            "properties": {
+                "name": f"{lat},{lon}",
+                "pm25": float(mean_pm25)  # PM2.5 average
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [lon, lat]  # Valid coordinates
+            }
+        }
+
+        features.append(feature)
+
+    return features 
 def generate_random_coordinates(x_range=(-80, 80), y_range=(-60, 60)):
     """
     Generates a tuple representing random coordinates within the given x and y ranges.
