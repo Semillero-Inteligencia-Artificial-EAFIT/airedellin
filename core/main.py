@@ -70,6 +70,9 @@ async def shutdown_event():
     for task in asyncio.all_tasks():
         task.cancel()
 
+@app.get(webpage+"/predictword", response_class=HTMLResponse)
+async def predictword(request: Request):
+    return templates.TemplateResponse("predictword.html", {"request": request, "token": token, "data": data})
 
 @app.get(webpage+"/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -230,11 +233,6 @@ async def about(request: Request):
         "request": request
     })
 
-@app.get(webpage+"/predictword", response_class=HTMLResponse)
-async def predictword(request: Request):
-    return templates.TemplateResponse("predictword.html", {
-        "request": request
-    })
 
 @app.get(webpage+"/route", response_class=HTMLResponse)
 async def route(request: Request):
