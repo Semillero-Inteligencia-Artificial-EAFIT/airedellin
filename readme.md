@@ -139,7 +139,8 @@ Join us in improving Medellín’s air quality for everyone. 🚀🌱
 - **Paris Data**: The data used for Paris sensors is not real; it's for testing purposes.
 - **Techincal Notes**: [Here](https://github.com/Semillero-Inteligencia-Artificial-EAFIT/airedellin/blob/main/docs/technical_documentation_en.md)
 - **Useful data**: [hugging face](https://huggingface.co/datasets/jero98772/Pm25medellin) 
-
+- **Useful geodata For Pm2.5**: [hugging face](https://huggingface.co/datasets/jero98772/stndata/blob/main/data.csv)
+  
 ### We want to
 
 - [X] Heatmap
