@@ -10,19 +10,22 @@ import polars as pl
 
 
 
-def get_pm25_features(file_path: str, resolution: int = 3):
+import polars as pl
+import h3
+
+def get_pm25_features(file_path: str, resolution: int = 7):
     """
     Reads a CSV file containing latitude, longitude, and PM2.5 data, groups the data by coordinates,
     calculates the average PM2.5 for each group, and converts each group into a GeoJSON-style feature
     with H3 hexagon IDs based on the geographic location.
-
+    
     Parameters:
     ----------
     file_path : str
         The path to the CSV file containing columns 'lat', 'lon', and 'MERRA2_CNN_Surface_PM25'.
     resolution : int, optional
         The resolution level for the H3 hexagons, by default 7. Higher values create smaller hexagons.
-
+    
     Returns:
     --------
     List[dict]:
@@ -45,37 +48,36 @@ def get_pm25_features(file_path: str, resolution: int = 3):
     """
     # Read the CSV file with Polars
     df = pl.read_csv(file_path)
-
+    
     # Group by latitude and longitude, then calculate the mean PM2.5 for each group
     grouped = df.group_by(["lat", "lon"]).agg([
         pl.col("MERRA2_CNN_Surface_PM25").mean().alias("mean_pm25")
     ])
-
+    
     # Convert each grouped result into the GeoJSON-style feature format
     features = []
-
     for row in grouped.rows():
         lat, lon, mean_pm25 = row
-
+        
+        # Generate H3 hexagon ID using the updated API
+        hexId = h3.latlng_to_cell(lat, lon, resolution)
+        
         # Create GeoJSON feature with coordinates and properties
-        hexId = h3.geo_to_h3(lat, lon, resolution)
         feature = {
             "type": "Feature",
             "properties": {
                 "name": f"{lat},{lon}",
-                "pm25": float(mean_pm25)  # PM2.5 average
+                "pm25": float(mean_pm25),  # PM2.5 average
+                "hexId": hexId  # H3 hexagon ID
             },
             "geometry": {
                 "type": "Point",
-                "coordinates": [hexId]  # Valid coordinates (longitude, latitude)
+                "coordinates": [lon, lat]  # Valid GeoJSON coordinates (longitude, latitude)
             }
         }
-
-        # Convert coordinates to H3 hexId
-        #feature["properties"]["hexId"] = hexId  # Add H3 hexagon ID to the feature
-
+        
         features.append(feature)
-
+    
     return features
 
 

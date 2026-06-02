@@ -260,3 +260,10 @@ async def add_donation(request: Request):
     return templates.TemplateResponse("add_donation.html", {
         "request": request
     })
+
+
+@app.get(webpage+"/health")
+async def health():
+    return {
+        "status": "ok"
+    }
